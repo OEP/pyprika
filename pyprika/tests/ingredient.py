@@ -1,7 +1,7 @@
 import unittest
 
 import pyprika
-from pyprika import Recipe, Ingredient
+from pyprika import Ingredient, Quantity
 from .common import BaseTest
 
 class StaticTest(BaseTest):
@@ -13,32 +13,28 @@ class BaseInstanceTest(BaseTest):
   def assertSanity(self):
     i = self.instance
     self.assertEqual(self.label, i.label)
-    self.assertEqual(self.unit, i.unit)
-    self.assertEqual(self.value, i.value)
+    self.assertEqual(i.quantity, self.quantity)
 
 class ValuelessInstanceTest(BaseInstanceTest):
   @classmethod
   def setUpClass(cls):
     cls.instance = Ingredient.parse('salt')
     cls.label = 'salt'
-    cls.unit = None
-    cls.value = None
+    cls.quantity = None
 
 class DimensionlessInstanceTest(BaseInstanceTest):
   @classmethod
   def setUpClass(cls):
     cls.instance = Ingredient.parse('2 eggs')
     cls.label = 'eggs'
-    cls.unit = None
-    cls.value = 2 
+    cls.quantity = Quantity(2)
 
 class FullInstanceTest(BaseInstanceTest):
   @classmethod
   def setUpClass(cls):
     cls.instance = Ingredient.parse('16 "fl oz" water')
-    cls.label = 'water' 
-    cls.unit = 'fl oz'
-    cls.value = 16
+    cls.label = 'water'
+    cls.quantity = Quantity(16, 'fl oz')
 
 class BasicInstanceTest(object):
 
@@ -48,10 +44,9 @@ class BasicInstanceTest(object):
   def test_mul(self):
     i = self.instance
     correct = Ingredient(i.label,
-                         i.value * 2 if i.value is not None else None,
-                         i.unit)
-    result = i * 2
-    self.assertEqual(correct, result)
+                         i.quantity * 2 if i.quantity is not None else None)
+    self.assertEqual(correct, i * 2)
+    self.assertEqual(correct, 2 * i)
 
 class ValuelessBasicTest(ValuelessInstanceTest, BasicInstanceTest):
   pass

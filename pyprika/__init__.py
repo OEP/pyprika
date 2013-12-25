@@ -1,2 +1,3 @@
 from .exceptions import ParseError
-from .recipe import Ingredient, Recipe
+from .ingredient import Ingredient
+from .quantity import Quantity
