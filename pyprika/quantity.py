@@ -1,5 +1,4 @@
 import shlex
-from weakref import WeakKeyDictionary
 
 from .exceptions import ParseError
 
@@ -66,13 +65,12 @@ class QuantityDescriptor(object):
   def __init__(self, value=None, convert=False):
     self.convert = convert
     self.default = self._check(value)
-    self.data = WeakKeyDictionary()
 
   def __get__(self, obj, objtype):
-    return self.data.get(obj, self.default)
+    return obj.__dict__.get(self, self.default)
 
   def __set__(self, obj, value):
-    self.data[obj] = self._check(value)
+    obj.__dict__[self] = self._check(value)
 
   def _check(self, value):
     if isinstance(value, basestring) and self.convert:
