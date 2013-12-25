@@ -85,3 +85,11 @@ class Recipe(object):
     else:
       raise TypeError("Not a number or 2-item tuple/list", value)
     return value
+
+  @property
+  def ingredients(self):
+    return getattr(self, '_ingredients', None)
+
+  @ingredients.setter
+  def ingredients(self, value):
+    self._ingredients = [Ingredient.parse(x) for x in value]
