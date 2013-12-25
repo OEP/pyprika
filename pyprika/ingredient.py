@@ -10,7 +10,7 @@ class Ingredient(object):
   def parse(cls, s):
     parts = shlex.split(s)
     if len(parts) > 3:
-      parts[2:] = " ".join(parts[2:])
+      parts[2:] = [" ".join(parts[2:])]
     assert len(parts) <= 3
     label, quantity = None, None
     if len(parts) == 1:

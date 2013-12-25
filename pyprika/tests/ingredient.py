@@ -32,8 +32,8 @@ class DimensionlessInstanceTest(BaseInstanceTest):
 class FullInstanceTest(BaseInstanceTest):
   @classmethod
   def setUpClass(cls):
-    cls.instance = Ingredient.parse('16 "fl oz" water')
-    cls.label = 'water'
+    cls.instance = Ingredient.parse('16 "fl oz" distilled water')
+    cls.label = 'distilled water'
     cls.quantity = Quantity(16, 'fl oz')
 
 class BasicInstanceTest(object):
