@@ -2,6 +2,26 @@ from copy import deepcopy
 from .ingredient import Ingredient
 from .quantity import Quantity, QuantityDescriptor
 
+RECIPE_ATTRIBUTES = (
+  'name',
+  'servings',
+  'source_url',
+  'servings',
+  'source',
+  'source_url',
+  'prep_time',
+  'cook_time',
+  'on_favorites',
+  'categories',
+  'nutritional_info',
+  'difficulty',
+  'rating',
+  'notes',
+  'photo',
+  'ingredients',
+  'directions',
+)
+
 class Recipe(object):
   name = None
 
@@ -31,25 +51,7 @@ class Recipe(object):
     return i
 
   def to_dict(self):
-    return {
-      'name': self.name,
-      'servings': self.servings,
-      'source_url': self.source_url,
-      'servings': self.servings,
-      'source': self.source,
-      'source_url': self.source_url,
-      'prep_time': (self.prep_time),
-      'cook_time': (self.cook_time),
-      'on_favorites': self.on_favorites, 
-      'categories':  (self.categories),
-      'nutritional_info': self.nutritional_info, 
-      'difficulty': self.difficulty, 
-      'rating': self.rating, 
-      'notes': self.notes, 
-      'photo': self.photo,
-      'ingredients': (self.ingredients),
-      'directions': (self.directions),
-    }
+    return dict((x, getattr(self, x)) for x in RECIPE_ATTRIBUTES)
 
   def __init__(self, name):
     self.name = name
@@ -62,6 +64,12 @@ class Recipe(object):
 
   def __repr__(self):
     return "<Recipe: {}>".format(self)
+
+  def __eq__(self, o):
+    if not isinstance(o, type(self)):
+      return False
+    return all(getattr(self, x) == getattr(o, x)
+               for x in RECIPE_ATTRIBUTES)
 
   @property
   def servings(self):
