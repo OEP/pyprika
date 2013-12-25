@@ -1,4 +1,5 @@
 import shlex
+from weakref import WeakKeyDictionary
 
 from .exceptions import ParseError
 
@@ -59,3 +60,25 @@ class Quantity(object):
 
   def __repr__(self):
     return "<Quantity: {}>".format(str(self))
+
+class QuantityDescriptor(object):
+
+  def __init__(self, value=None, convert=False):
+    self.convert = convert
+    self.default = self._check(value)
+    self.data = WeakKeyDictionary()
+
+  def __get__(self, obj, objtype):
+    return self.data.get(obj, self.default)
+
+  def __set__(self, obj, value):
+    self.data[obj] = self._check(value)
+
+  def _check(self, value):
+    if isinstance(value, basestring) and self.convert:
+      value = Quantity.parse(value)
+    elif value is None:
+      pass
+    elif not isinstance(value, Quantity):
+      raise TypeError("Not a Quantity", value)
+    return value
