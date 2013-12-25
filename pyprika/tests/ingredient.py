@@ -18,8 +18,8 @@ class BaseInstanceTest(BaseTest):
 class ValuelessInstanceTest(BaseInstanceTest):
   @classmethod
   def setUpClass(cls):
-    cls.instance = Ingredient.parse('salt')
-    cls.label = 'salt'
+    cls.instance = Ingredient.parse('sea salt')
+    cls.label = 'sea salt'
     cls.quantity = None
 
 class DimensionlessInstanceTest(BaseInstanceTest):
