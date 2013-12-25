@@ -1,4 +1,5 @@
 import shlex
+from fractions import Fraction
 
 from .exceptions import ParseError
 
@@ -6,10 +7,16 @@ def _to_number(amount):
   try:
     return int(amount)
   except ValueError:
-    try:
-      return float(amount)
-    except:
-      raise ParseError("Can't convert to number", amount)
+    pass
+  try:
+    return float(amount)
+  except:
+    pass
+  try:
+    return Fraction(amount)
+  except ValueError:
+    pass
+  raise ParseError("Can't convert to number", amount)
 
 class Quantity(object):
   amount = None 
