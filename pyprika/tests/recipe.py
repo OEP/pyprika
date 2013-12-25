@@ -1,5 +1,5 @@
 import pyprika
-from pyprika import Recipe, ParseError
+from pyprika import Recipe, ParseError, Ingredient
 from .common import BaseTest
 
 class StaticTest(BaseTest):
@@ -23,10 +23,17 @@ class StaticTest(BaseTest):
 class InstanceTest(BaseTest):
   pass
 
-class EmptyInstanceTest(InstanceTest):
+class ManualInstanceTest(InstanceTest):
   @classmethod
   def setUpClass(cls):
-    cls.instance = Recipe('Empty')
+    i = cls.instance = Recipe('Empty')
+    i.ingredients.append(Ingredient.parse('1 egg'))
+    i.ingredients.append(Ingredient.parse('salt'))
+    i.ingredients.append(Ingredient.parse('1 cup milk'))
+    i.directions.append('Put it in a bowl')
+    i.directions.append('Mix \'em up.')
+    i.prep_time = '1 day'
+    i.cook_time = '1 week'
 
 class BasicTest(object):
   
@@ -34,4 +41,7 @@ class BasicTest(object):
     i = self.instance
     d = i.to_dict()
     result = Recipe.from_dict(d)
+    self.assertEqual(i, result)
 
+class ManualBasicTest(ManualInstanceTest, BasicTest):
+  pass
