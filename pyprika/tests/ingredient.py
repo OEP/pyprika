@@ -4,11 +4,6 @@ import pyprika
 from pyprika import Ingredient, Quantity
 from .common import BaseTest
 
-class StaticTest(BaseTest):
-  def test_parse_error(self):
-    self.assertRaises(pyprika.ParseError, Ingredient.parse, "(one) egg")
-    self.assertRaises(pyprika.ParseError, Ingredient.parse, "(1.1.1) egg")
-
 class BaseInstanceTest(BaseTest):
   def assertSanity(self):
     i = self.instance
