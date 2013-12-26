@@ -1,7 +1,10 @@
 import shlex
+import re
 from fractions import Fraction
 
 from .exceptions import ParseError
+
+quantity_rx = re.compile(r'^(((?P<ipart>\d+) )?(?P<fpart>\d+/\d+)|(?P<amount>\d+([.]\d+)?))( (?P<unit>.*))?$')
 
 def _to_number(amount):
   try:
@@ -10,7 +13,7 @@ def _to_number(amount):
     pass
   try:
     return float(amount)
-  except:
+  except ValueError:
     pass
   try:
     return Fraction(amount)
@@ -24,16 +27,17 @@ class Quantity(object):
 
   @classmethod
   def parse(cls, s):
-    parts = shlex.split(s)
-    if len(parts) > 2:
-      parts[1:] = [" ".join(parts[1:])]
-    assert len(parts) <= 2
-    amount, unit = (None,) * 2
-    if len(parts) == 1:
-      amount = _to_number(parts[0])
-    else: 
-      amount = _to_number(parts[0])
-      unit = parts[1]
+    m = quantity_rx.match(s)
+    if not m:
+      raise ParseError("Not a valid quantity", s)
+    amount, unit, ipart, fpart = m.group('amount', 'unit', 'ipart', 'fpart')
+    if amount:
+      amount = _to_number(amount)
+    elif ipart and not fpart:
+      amount = int(ipart)
+    else:
+      assert fpart
+      amount = int(ipart or 0) + Fraction(fpart)
     return cls(amount=amount, unit=unit)
   
   def __init__(self, amount=None, unit=None):
@@ -59,10 +63,19 @@ class Quantity(object):
             self.amount == other.amount)
 
   def __str__(self):
+    def strfrac(s):
+      if not isinstance(s, Fraction):
+        return s
+      ipart = int(s.numerator/s.denominator)
+      fpart = s - ipart
+      if ipart and fpart:
+        return "{} {}".format(ipart, fpart)
+      return str(ipart or fpart or 0)
+    s = strfrac(self.amount)
     if self.unit is None:
-      return str(self.amount)
+      return str(s)
     else:
-      return "{} {}".format(self.amount, self.unit)
+      return "{} {}".format(s, self.unit)
 
   def __repr__(self):
     return "<Quantity: {}>".format(str(self))

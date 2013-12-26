@@ -1,6 +1,11 @@
 import shlex
+import re
+from copy import deepcopy
 
 from .quantity import Quantity
+from .exceptions import ParseError
+
+ingredient_rx = re.compile(r'^([(](?P<quantity>[^)]+)[)] )?(?P<label>.+)$')
 
 class Ingredient(object):
   label = None
@@ -8,16 +13,12 @@ class Ingredient(object):
 
   @classmethod
   def parse(cls, s):
-    parts = shlex.split(s)
-    if len(parts) > 3:
-      parts[2:] = [" ".join(parts[2:])]
-    assert len(parts) <= 3
-    label, quantity = None, None
-    if len(parts) == 1:
-      label = parts[0]
-    else:
-      label = parts[-1]
-      quantity = Quantity.parse(" ".join(parts[:-1]))
+    m = ingredient_rx.match(s)
+    if not m:
+      raise ParseError("Invalid ingredient syntax", s)
+    quantity, label = m.group('quantity', 'label')
+    if quantity:
+      quantity = Quantity.parse(quantity)
     return cls(label=label, quantity=quantity)
 
   def __init__(self, label, quantity=None):
@@ -28,7 +29,7 @@ class Ingredient(object):
     if self.quantity is None:
       return self.label
     else:
-      return "{} {}".format(self.quantity, self.label)
+      return "({}) {}".format(self.quantity, self.label)
   
   def __repr__(self):
     return "<Ingredient: {}>".format(self)

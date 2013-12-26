@@ -6,8 +6,8 @@ from .common import BaseTest
 
 class StaticTest(BaseTest):
   def test_parse_error(self):
-    self.assertRaises(pyprika.ParseError, Ingredient.parse, "one egg")
-    self.assertRaises(pyprika.ParseError, Ingredient.parse, "1.1.1 egg")
+    self.assertRaises(pyprika.ParseError, Ingredient.parse, "(one) egg")
+    self.assertRaises(pyprika.ParseError, Ingredient.parse, "(1.1.1) egg")
 
 class BaseInstanceTest(BaseTest):
   def assertSanity(self):
@@ -25,14 +25,14 @@ class ValuelessInstanceTest(BaseInstanceTest):
 class DimensionlessInstanceTest(BaseInstanceTest):
   @classmethod
   def setUpClass(cls):
-    cls.instance = Ingredient.parse('2 eggs')
+    cls.instance = Ingredient.parse('(2) eggs')
     cls.label = 'eggs'
     cls.quantity = Quantity(2)
 
 class FullInstanceTest(BaseInstanceTest):
   @classmethod
   def setUpClass(cls):
-    cls.instance = Ingredient.parse('16 "fl oz" distilled water')
+    cls.instance = Ingredient.parse('(16 fl oz) distilled water')
     cls.label = 'distilled water'
     cls.quantity = Quantity(16, 'fl oz')
 
