@@ -92,4 +92,6 @@ class Recipe(object):
 
   @ingredients.setter
   def ingredients(self, value):
-    self._ingredients = [Ingredient.parse(x) for x in value]
+    self._ingredients = [Ingredient.parse(x)
+                         if not isinstance(x, Ingredient) else x
+                         for x in value]
