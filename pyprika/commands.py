@@ -1,12 +1,9 @@
-from . import load
+from .kit import registry
 from .pprint import pprint_recipe
-from .exceptions import ParseError
 from abc import ABCMeta, abstractmethod, abstractproperty
 from argparse import ArgumentParser
-import glob
 import os
 import sys
-import yaml
 import re
 
 def _suggest(matches, cutoff=5, conjunct=' or ', sep=', ', ellipsis='...'):
@@ -18,48 +15,6 @@ def _suggest(matches, cutoff=5, conjunct=' or ', sep=', ', ellipsis='...'):
     return suggestions[0]
   else:
     return sep.join(suggestions[:-1]) + conjunct + suggestions[-1]
-
-class _Registry(object):
-  def __init__(self):
-    self.recipes = {}
-    self.search(os.path.curdir)
-    config_path = os.path.expanduser("~/.pyprika")
-    if os.path.exists(config_path):
-      with open(config_path) as fp:
-        self.config = yaml.load(fp)
-    else:
-      self.config = {}
-    if not isinstance(self.config, dict):
-      sys.stderr.write("warning: invalid user configuration; skipping")
-      self.config = {}
-    paths = self.config.get('paths', [])
-    recursive = self.config.get('recursive', False)
-    search = self.search if not recursive else self.recursive_search
-    for p in paths:
-      search(p)
-
-  def recursive_search(self, path):
-    skip_hidden = self.config.get('skip_hidden', True)
-    for root, dirnames, filenames in os.walk(path, topdown=True):
-      if skip_hidden:
-        dirnames[:] = [d for d in dirnames if not d.startswith('.')]
-        filenames[:] = [f for f in filenames if not f.startswith('.')]
-      filenames[:] = [f for f in filenames if f.endswith('.yaml')]
-      for f in filenames:
-        self.add(os.path.join(root, f))
-
-  def search(self, path):
-    files = glob.glob(os.path.join(path, '*.yaml'))
-    for f in files:
-      try:
-        self.add(f)
-      except ParseError:
-        pass
-    
-  def add(self, path):
-    recipe = load(path)
-    self.recipes[recipe.name] = recipe
-registry = _Registry()
 
 class CommandError(Exception):
   def __init__(self, message, exitcode=1):
