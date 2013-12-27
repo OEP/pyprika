@@ -5,8 +5,6 @@ from .quantity import Quantity, QuantityDescriptor
 RECIPE_ATTRIBUTES = (
   'name',
   'servings',
-  'source_url',
-  'servings',
   'source',
   'source_url',
   'prep_time',
