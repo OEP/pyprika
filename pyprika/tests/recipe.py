@@ -40,14 +40,20 @@ class InstanceTest(BaseTest):
 class ManualInstanceTest(InstanceTest):
   @classmethod
   def setUpClass(cls):
-    i = cls.instance = Recipe('Empty')
-    i.ingredients.append(Ingredient.parse('1 egg'))
-    i.ingredients.append(Ingredient.parse('salt'))
-    i.ingredients.append(Ingredient.parse('1 cup milk'))
-    i.directions.append('Put it in a bowl')
-    i.directions.append('Mix \'em up.')
-    i.prep_time = '1 day'
-    i.cook_time = '1 week'
+    i = cls.instance = Recipe.from_dict({
+      'name': 'My Special Recipe',
+      'prep_time': '1 day',
+      'cook_time': '1 week',
+      'ingredients': [
+        '(1) egg',
+        'salt',
+        '(1 cup) milk',
+      ],
+      'directions': [
+        'Put it in a bowl',
+        'Mix \'em up.',
+      ],
+    })
 
 class BasicTest(object):
   
