@@ -29,7 +29,7 @@ class Quantity(object):
   def parse(cls, s):
     m = quantity_rx.match(s)
     if not m:
-      raise ParseError("Not a valid quantity", s)
+      raise ParseError("Not valid quantity syntax", s)
     amount, unit, ipart, fpart = m.group('amount', 'unit', 'ipart', 'fpart')
     if amount:
       amount = _to_number(amount)
