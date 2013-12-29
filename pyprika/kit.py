@@ -6,7 +6,7 @@ pre-cache recipes which would be wasteful for a library to do.
 """
 
 from . import load
-from .exceptions import ParseError
+from .exceptions import LoadError 
 import glob
 import os
 import warnings
@@ -40,14 +40,17 @@ class _Registry(object):
         filenames[:] = [f for f in filenames if not f.startswith('.')]
       filenames[:] = [f for f in filenames if f.endswith('.yaml')]
       for f in filenames:
-        self.add(os.path.join(root, f))
+        try:
+          self.add(os.path.join(root, f))
+        except LoadError:
+          pass
 
   def search(self, path):
     files = glob.glob(os.path.join(path, '*.yaml'))
     for f in files:
       try:
         self.add(f)
-      except ParseError:
+      except LoadError:
         pass
     
   def add(self, path):
