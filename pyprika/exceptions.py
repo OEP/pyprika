@@ -6,6 +6,24 @@ class LoadError(Exception):
     super(LoadError, self).__init__(*args, **kwargs)
     self.cause = cause
 
+  def __str__(self):
+    s = ""
+    if len(self.args) == 1:
+      s = self.args[0]
+    elif len(self.args) > 1:
+      s = "%s: %s" % (self.args[0], ", ".join(repr(arg)
+                                              for arg in self.args[1:]))
+    
+    if self.cause:
+      if s:
+        s = "%s (proxy of: %s)" % (s, type(self.cause).__name__)
+      else:
+        s = str(self.cause)
+    return s
+
+  def __repr__(self):
+    return "<%s: %s>" % (type(self).__name__, self)
+
 class ParseError(Exception):
   """ Raised on invalid syntax.
   """

@@ -17,7 +17,7 @@ def _loadfp(fp):
       raise LoadError('Recipe did not decode as expected (got %s)' % type(d).__name__)
   except:
     exc_type, exc, traceback = sys.exc_info()
-    raise LoadError(*exc.args, cause=exc)
+    raise LoadError, LoadError(*exc.args, cause=exc), traceback
 
 def load(resource):
   """ Load ``resource``, some mixed type.
