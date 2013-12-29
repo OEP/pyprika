@@ -1,5 +1,7 @@
 from .kit import registry
 from .pprint import pprint_recipe
+from .exceptions import LoadError
+from . import load
 from abc import ABCMeta, abstractmethod, abstractproperty
 from argparse import ArgumentParser
 import os
@@ -78,9 +80,32 @@ class Show(Command):
     parser.add_argument('name', type=str,
                         help='name (or prefix of name) of recipe to show')
 
+class Validate(Command):
+  name = 'validate'
+  help = 'validate an input recipe'
+
+  def execute(self, ns):
+    exit_code = 0
+    for f in ns.filenames:
+      try:
+        with open(f, 'r') as fp:
+          load(fp)
+      except (LoadError, IOError) as e:
+        exit_code = 1
+        if len(ns.filenames) > 1:
+          print "%s: %s" % (f, e)
+        else:
+          print str(e)
+    sys.exit(exit_code)
+
+  def setup_parser(self, parser):
+    parser.add_argument('filenames', type=str, nargs='+',
+                        help='path to recipe file(s) to validate')
+
 COMMANDS = (
   Show(),
   Search(),
+  Validate(),
 )
 
 def main():
