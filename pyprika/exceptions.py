@@ -13,11 +13,7 @@ class LoadError(Exception):
     elif len(self.args) > 1:
       s = "%s: %s" % (self.args[0], ", ".join(repr(arg)
                                               for arg in self.args[1:]))
-    
-    if self.cause:
-      if s:
-        s = "%s (proxy of: %s)" % (s, type(self.cause).__name__)
-      else:
+    if self.cause and not s:
         s = str(self.cause)
     return s
 
