@@ -27,6 +27,25 @@ class Quantity(object):
 
   @classmethod
   def parse(cls, s):
+    """
+    Parse an object from a string. Valid strings are of the form:
+
+    ::
+
+      amount[ unit] 
+    
+    Where ``unit`` is unconstrained and ``amount`` is one of the following:
+
+    * an integer, like ``4``
+    * a decimal number, like ``4.5`` (*not* scientific notation)
+    * a fraction, like ``1/2``
+    * a mixed number, like ``1 1/2``
+
+    :param str s: string to parse
+    :raises ParseError: on invalid syntax
+    :returns: the resulting Quantity 
+    :rtype: Quantity 
+    """
     m = quantity_rx.match(s)
     if not m:
       raise ParseError("Not valid quantity syntax", s)

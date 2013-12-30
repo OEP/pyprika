@@ -8,7 +8,10 @@
 .. autofunction:: loads
 
 .. autoclass:: Recipe
+   :members: from_dict, to_dict 
 
-.. autoclass:: Ingredient 
+.. autoclass:: Ingredient
+   :members: parse
 
 .. autoclass:: Quantity 
+   :members: parse

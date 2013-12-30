@@ -34,7 +34,19 @@ def load(resource):
 
   The file is assumed to be a pyprika-compliant YAML document. If the document
   contains a sequence, a list of ``Recipe`` objects will be returned.
-  Otherwise, a single ``Recipe`` object should be returend.
+  Otherwise, a single ``Recipe`` object should be returned.
+
+  Note that this function wraps the underlying exceptions thrown by
+  :meth:`Recipe.from_dict` under the assumption it is due to a malformed
+  document, but the original traceback is preserved.
+
+  :param resource: the resource containing the document to load
+  :type str or file-like object resource:
+  :raises IOError: if there was an error opening the resource
+  :raises LoadError: if there was an error in the loading of the document,
+                     usually indicative of a syntax error
+  :returns: the recipe data contained in that resource
+  :rtype: :class:`Recipe` or list of :class:`Recipe`
   """
   if isinstance(resource, basestring):
     with open(resource, 'r') as fp:
@@ -45,6 +57,13 @@ def load(resource):
 def loads(data):
   """ Load recipe from string data.
 
-  See ``load`` for more information.
+  This wraps ``data`` in a :class:`cString.StringIO` and calls :func:`load` on
+  it.
+
+  See :func:`load` for more information.
+
+  :param str data: recipe document data
+  :returns: the recipe data contained in ``data`` 
+  :rtype: :class:`Recipe` or list of :class:`Recipe`
   """
   return load(StringIO(data))
