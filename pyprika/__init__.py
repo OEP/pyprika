@@ -1,3 +1,10 @@
+"""
+A Python package for recipe parsing and management.
+"""
+
+__version__ = '1.0.0'
+__author__ = 'Paul Kilgo'
+
 import yaml
 import sys
 from cStringIO import StringIO
