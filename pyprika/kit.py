@@ -54,7 +54,8 @@ class _Registry(object):
         pass
     
   def add(self, path):
-    recipe = load(path)
-    self.recipes[recipe.name] = recipe
+    with open(path, 'r') as fp:
+      recipe = load(fp)
+      self.recipes[recipe.name] = recipe
 
 registry = _Registry()
