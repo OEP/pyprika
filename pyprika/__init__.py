@@ -61,11 +61,30 @@ def loads(data, loader=None, **kw):
   return load(StringIO(data), loader=loader, **kw)
 
 def dump(recipe, fp, dumper=None, **kw):
+  """ Dump recipe to a file-like object
+  
+  :param Recipe recipe: the recipe to dump
+  :param file-like fp: the file stream to dump to
+  :param callable dumper: a callable which takes two positional arguments, the
+                          first a dict and the second a file stream, and
+                          optional keyword arguments and encodes the  recipe to
+                          the file stream (defaults to yaml.dump)
+  :param **kw: passed through to dumper
+  """
   dumper = dumper or yaml.dump
   d = recipe.to_dict(serialize=True)
   dumper(d, fp, **kw)
 
 def dumps(recipe, dumper=None, **kw):
+  """ Dump recipe object as a string.
+
+  This is a convenience method to dump to a StringIO object.
+
+  See :func:`dump` for parameter details.
+
+  :returns: recipe encoded as a string
+  :rtype: str
+  """
   fp = StringIO()
   dump(recipe, fp, dumper=dumper, **kw)
   return fp.getvalue()

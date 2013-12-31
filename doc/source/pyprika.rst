@@ -12,6 +12,10 @@ Input and output
 
 .. autofunction:: loads
 
+.. autofunction:: dump
+
+.. autofunction:: dumps
+
 API classes
 -----------
 
