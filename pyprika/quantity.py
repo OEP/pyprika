@@ -22,6 +22,15 @@ def _to_number(amount):
   raise ParseError("Can't convert to number", amount)
 
 class Quantity(object):
+  """ Class for representing quantity.
+
+  Quantities can either be a measurement (like ``1 cup``) or a dimensionless
+  amount (like ``12``).
+
+  :ivar amount: numeric amount of the quantity
+  :type amount: int or float or fractions.Fraction
+  :ivar str unit: unit of the amount, if any
+  """
   amount = None 
   unit = None
 

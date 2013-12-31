@@ -1,5 +1,7 @@
 class LoadError(Exception):
   """ A blanket exception to catch if there was an error loading a recipe.
+
+  :ivar cause: the original exception, if any
   """
   def __init__(self, *args, **kwargs):
     cause = kwargs.pop('cause', None)

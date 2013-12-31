@@ -8,6 +8,11 @@ from .exceptions import ParseError
 ingredient_rx = re.compile(r'^([(](?P<quantity>[^)]+)[)] )?(?P<label>.+)$')
 
 class Ingredient(object):
+  """ Class for representing ingredients.
+
+  :ivar str label: the label of the ingredient (like ``egg``)
+  :ivar Quantity quantity: the amount of the ingredient, if any
+  """
   label = None
   quantity = None
 
