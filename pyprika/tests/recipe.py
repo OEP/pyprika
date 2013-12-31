@@ -1,7 +1,28 @@
 import pyprika
 import yaml
-from pyprika import Recipe, ParseError, Ingredient, loads, LoadError
+from pyprika import Recipe, ParseError, Ingredient, loads, dumps, LoadError
 from .common import BaseTest
+
+STANDARD_DICT = {
+  'name': 'My Special Recipe',
+  'prep_time': '1 day',
+  'cook_time': '1 week',
+  'servings': [2, 4],
+  'source': 'Source Person',
+  'source_url': 'http://example.com/',
+  'notes': 'some notes',
+  'ingredients': [
+    '(1.5 cup) milk',
+    '(1 1/2 cup) milk',
+    '(1 cup) milk',
+    '(1) egg',
+    'salt',
+  ],
+  'directions': [
+    'Put it in a bowl',
+    'Mix \'em up.',
+  ],
+}
 
 class StaticTest(BaseTest):
   def test_empty(self):
@@ -40,20 +61,7 @@ class InstanceTest(BaseTest):
 class ManualInstanceTest(InstanceTest):
   @classmethod
   def setUpClass(cls):
-    i = cls.instance = Recipe.from_dict({
-      'name': 'My Special Recipe',
-      'prep_time': '1 day',
-      'cook_time': '1 week',
-      'ingredients': [
-        '(1) egg',
-        'salt',
-        '(1 cup) milk',
-      ],
-      'directions': [
-        'Put it in a bowl',
-        'Mix \'em up.',
-      ],
-    })
+    i = cls.instance = Recipe.from_dict(STANDARD_DICT)
 
 class BasicTest(object):
   
@@ -61,6 +69,12 @@ class BasicTest(object):
     i = self.instance
     d = i.to_dict()
     result = Recipe.from_dict(d)
+    self.assertEqual(i, result)
+
+  def test_dump_load_default(self):
+    i = self.instance
+    s = dumps(i)
+    result = loads(s)
     self.assertEqual(i, result)
 
 class ManualBasicTest(ManualInstanceTest, BasicTest):

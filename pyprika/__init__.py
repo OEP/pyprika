@@ -75,4 +75,4 @@ def dump(recipe, fp):
 def dumps(recipe):
   fp = StringIO()
   dump(recipe, fp)
-  return recipe.getvalue()
+  return fp.getvalue()
