@@ -55,7 +55,7 @@ class Recipe(object):
       if not hasattr(i, key):
         raise AttributeError(key)
       v = deepcopy(d[key])
-      setattr(i, key, d[key])
+      setattr(i, key, v)
     return i
 
   def to_dict(self):
