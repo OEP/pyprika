@@ -67,3 +67,12 @@ def loads(data):
   :rtype: :class:`Recipe` or list of :class:`Recipe`
   """
   return load(StringIO(data))
+
+def dump(recipe, fp):
+  d = recipe.to_dict()
+  yaml.dump(d, fp)
+
+def dumps(recipe):
+  fp = StringIO()
+  dump(recipe, fp)
+  return recipe.getvalue()

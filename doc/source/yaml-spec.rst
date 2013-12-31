@@ -23,14 +23,8 @@ features to touch on:
   source_url: http://www.example.com/
   prep_time: 5 min
   cook_time: 45 min
-  on_favorites: no
-  categories: [Breads, Appetizers]
-  nutritional_info: 320 calories
-  difficulty: Easy
-  rating: 4
   notes: |
     Piping hot!
-  photo: null 
  
   ingredients:
     - (1/2 tsp) baking powder 
@@ -71,27 +65,8 @@ Field descriptions
   cook_time
     The amount of cooking time for the recipe. Must conform to `quantity syntax`_.
 
-  on_favorites
-    A boolean value (``yes`` or ``no``) noting if the recipe has favorite
-    syntax.
-
-  categories
-    A list of unconstrained values for keywords or tags to aid in searching.
-
-  nutritional_info
-    An unconstrained field for providing nutritional information.
-
-  difficulty
-    An unconstrained field for noting recipe difficulty. 
-
-  rating
-    An unconstrained field for rating a recipe. 
-
   notes
     An unconstrained field for providing miscellaneous notes.
-
-  photo
-    Reserved for future use.
 
   ingredients
     A list of ingredients needed for the recipe. Each item in the list must

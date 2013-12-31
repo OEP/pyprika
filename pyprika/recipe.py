@@ -9,13 +9,7 @@ RECIPE_ATTRIBUTES = (
   'source_url',
   'prep_time',
   'cook_time',
-  'on_favorites',
-  'categories',
-  'nutritional_info',
-  'difficulty',
-  'rating',
   'notes',
-  'photo',
   'ingredients',
   'directions',
 )
@@ -30,12 +24,7 @@ class Recipe(object):
   :ivar str source_url: URL source to for recipe
   :ivar Quantity prep_time: total preparation time for recipe
   :ivar Quantity cook_time: total cooking time for recipe
-  :ivar bool on_favorites: indicates a favorited recipe
-  :ivar list categories: categories a recipe belongs to
-  :ivar str nutritional_info: arbitrary nutrition information
-  :ivar str difficulty: arbitrary difficulty information
   :ivar str notes: miscellaneous data about recipe
-  :ivar str photo: reserved for future use
   :ivar list ingredients: list of Ingredient objects
   :ivar list directions: list of instructions to prepare recipe
   """
@@ -47,13 +36,7 @@ class Recipe(object):
   source_url = ''
   prep_time = QuantityDescriptor(convert=True) 
   cook_time = QuantityDescriptor(convert=True) 
-  on_favorites = False
-  categories = ()
-  nutritional_info = ''
-  difficulty = None
-  rating = None
   notes = ''
-  photo = None
   ingredients = ()
   directions = ()
 
@@ -85,7 +68,6 @@ class Recipe(object):
 
   def __init__(self, name):
     self.name = name
-    self.categories = []
     self.ingredients = []
     self.directions = []
 

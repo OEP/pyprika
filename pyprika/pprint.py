@@ -28,5 +28,3 @@ def pprint_recipe(recipe, os=sys.stdout):
     os.write("  %d. %s\n" % (num, d))
 
   writeif(recipe.notes, "\nNotes:\n\n%s" % recipe.notes)
-  writeif(recipe.nutritional_info,
-          "\nNutritional info:\n\n%s\n" % recipe.nutritional_info)
