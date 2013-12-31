@@ -62,7 +62,7 @@ def loads(data, loader=None, **kw):
 
 def dump(recipe, fp, dumper=None, **kw):
   dumper = dumper or yaml.dump
-  d = recipe.to_dict()
+  d = recipe.to_dict(serialize=True)
   dumper(d, fp, **kw)
 
 def dumps(recipe, dumper=None, **kw):

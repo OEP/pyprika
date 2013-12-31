@@ -58,13 +58,24 @@ class Recipe(object):
       setattr(i, key, v)
     return i
 
-  def to_dict(self):
+  def to_dict(self, serialize=False):
     """ Return a dictionary representing the Recipe.
 
+    :param bool serialize: convert as much as possible to primitive types
     :returns: a dictionary mapping attribute names to values
     :rtype: dict
     """
-    return dict((x, getattr(self, x)) for x in RECIPE_ATTRIBUTES)
+    def _serialize(value):
+      if not serialize:
+        return value
+      if isinstance(value, (Quantity, Ingredient)):
+        return str(value)
+      elif isinstance(value, (tuple, list)):
+        cls = type(value)
+        return cls(_serialize(x) for x in value)
+      return value
+    return dict((x, _serialize(getattr(self, x))) 
+                for x in RECIPE_ATTRIBUTES)
 
   def __init__(self, name):
     self.name = name
