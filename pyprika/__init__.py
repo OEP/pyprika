@@ -13,7 +13,7 @@ from .ingredient import Ingredient
 from .quantity import Quantity
 from .recipe import Recipe
 
-def load(fp):
+def load(fp, loader=None, **kw):
   """ Load ``fp``, a file-like object 
 
   The file is assumed to be a pyprika-compliant YAML document. If the document
@@ -25,13 +25,17 @@ def load(fp):
   document, but the original traceback is preserved.
 
   :param file-like fp: the file-like object containing the document to load
+  :param callable loader: takes one positional argument and optional arguments
+                          and returns a dict (defaults to ``yaml.load``)
+  :param **kw: passed through to loader
   :raises LoadError: if there was an error in the loading of the document,
                      usually indicative of a syntax error
   :returns: the recipe data contained in the stream 
   :rtype: :class:`Recipe` or list of :class:`Recipe`
   """
+  loader = loader or yaml.load
   try:
-    d = yaml.load(fp)
+    d = loader(fp)
     if isinstance(d, (tuple, list)):
       return [Recipe.from_dict(x) for x in d]
     elif isinstance(d, dict):
@@ -42,7 +46,7 @@ def load(fp):
     exc_type, exc, traceback = sys.exc_info()
     raise LoadError, LoadError(*exc.args, cause=exc), traceback
   
-def loads(data):
+def loads(data, loader=None, **kw):
   """ Load recipe from string data.
 
   This wraps ``data`` in a :class:`cString.StringIO` and calls :func:`load` on
@@ -54,13 +58,14 @@ def loads(data):
   :returns: the recipe data contained in ``data`` 
   :rtype: :class:`Recipe` or list of :class:`Recipe`
   """
-  return load(StringIO(data))
+  return load(StringIO(data), loader=loader, **kw)
 
-def dump(recipe, fp):
+def dump(recipe, fp, dumper=None, **kw):
+  dumper = dumper or yaml.dump
   d = recipe.to_dict()
-  yaml.dump(d, fp)
+  dumper(d, fp, **kw)
 
-def dumps(recipe):
+def dumps(recipe, dumper=None, **kw):
   fp = StringIO()
-  dump(recipe, fp)
+  dump(recipe, fp, dumper=dumper, **kw)
   return fp.getvalue()

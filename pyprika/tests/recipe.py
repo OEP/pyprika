@@ -1,5 +1,5 @@
 import pyprika
-import yaml
+import yaml, json, simplejson
 from pyprika import Recipe, ParseError, Ingredient, loads, dumps, LoadError
 from .common import BaseTest
 
@@ -75,6 +75,24 @@ class BasicTest(object):
     i = self.instance
     s = dumps(i)
     result = loads(s)
+    self.assertEqual(i, result)
+  
+  def test_dump_load_yaml(self):
+    i = self.instance
+    s = dumps(i, dumper=yaml.dump)
+    result = loads(s, loader=yaml.load)
+    self.assertEqual(i, result)
+  
+  def test_dump_load_json(self):
+    i = self.instance
+    s = dumps(i, dumper=json.dump)
+    result = loads(s, loader=json.load)
+    self.assertEqual(i, result)
+  
+  def test_dump_load_simplejson(self):
+    i = self.instance
+    s = dumps(i, dumper=simplejson.dump)
+    result = loads(s, loader=simplejson.load)
     self.assertEqual(i, result)
 
 class ManualBasicTest(ManualInstanceTest, BasicTest):
