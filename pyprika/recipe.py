@@ -21,6 +21,25 @@ RECIPE_ATTRIBUTES = (
 )
 
 class Recipe(object):
+  """Class for representing a recipe.
+
+  :ivar str name: human-friendly name of recipe
+  :ivar servings: number of servings or a range (a 2-item tuple) 
+  :type servings int or tuple or None:
+  :ivar str source: human-friendly source of recipe
+  :ivar str source_url: URL source to for recipe
+  :ivar Quantity prep_time: total preparation time for recipe
+  :ivar Quantity cook_time: total cooking time for recipe
+  :ivar bool on_favorites: indicates a favorited recipe
+  :ivar list categories: categories a recipe belongs to
+  :ivar str nutritional_info: arbitrary nutrition information
+  :ivar str difficulty: arbitrary difficulty information
+  :ivar str notes: miscellaneous data about recipe
+  :ivar str photo: reserved for future use
+  :ivar list ingredients: list of Ingredient objects
+  :ivar list directions: list of instructions to prepare recipe
+  """
+
   name = None
 
   servings = None
@@ -40,6 +59,14 @@ class Recipe(object):
 
   @classmethod
   def from_dict(cls, d):
+    """ Creates a new recipe from a dictionary.
+
+    :param dict d: the dictionary to convert
+    :raises KeyError: if a required field is missing
+    :raises AttributeError: if an invalid field is specified
+    :returns: the resulting recipe
+    :rtype: Recipe
+    """
     i = cls(name=d['name'])
     for key in d.iterkeys():
       if not hasattr(i, key):
@@ -49,6 +76,11 @@ class Recipe(object):
     return i
 
   def to_dict(self):
+    """ Return a dictionary representing the Recipe.
+
+    :returns: a dictionary mapping attribute names to values
+    :rtype: dict
+    """
     return dict((x, getattr(self, x)) for x in RECIPE_ATTRIBUTES)
 
   def __init__(self, name):

@@ -22,11 +22,39 @@ def _to_number(amount):
   raise ParseError("Can't convert to number", amount)
 
 class Quantity(object):
+  """ Class for representing quantity.
+
+  Quantities can either be a measurement (like ``1 cup``) or a dimensionless
+  amount (like ``12``).
+
+  :ivar amount: numeric amount of the quantity
+  :type amount: int or float or fractions.Fraction
+  :ivar str unit: unit of the amount, if any
+  """
   amount = None 
   unit = None
 
   @classmethod
   def parse(cls, s):
+    """
+    Parse an object from a string. Valid strings are of the form:
+
+    ::
+
+      amount[ unit] 
+    
+    Where ``unit`` is unconstrained and ``amount`` is one of the following:
+
+    * an integer, like ``4``
+    * a decimal number, like ``4.5`` (*not* scientific notation)
+    * a fraction, like ``1/2``
+    * a mixed number, like ``1 1/2``
+
+    :param str s: string to parse
+    :raises ParseError: on invalid syntax
+    :returns: the resulting Quantity 
+    :rtype: Quantity 
+    """
     m = quantity_rx.match(s)
     if not m:
       raise ParseError("Not valid quantity syntax", s)
