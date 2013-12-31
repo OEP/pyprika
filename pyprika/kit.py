@@ -25,13 +25,21 @@ if not isinstance(config, dict):
 
 class _Registry(object):
   def __init__(self):
-    self.recipes = {}
-    self.search(os.path.curdir)
-    paths = config.get('paths', [])
-    recursive = config.get('recursive', False)
-    search = self.search if not recursive else self.recursive_search
-    for p in paths:
-      search(p)
+    pass
+
+  @property
+  def recipes(self):
+    try:
+      return self._recipes
+    except AttributeError:
+      self._recipes = {}
+      self.search(os.path.curdir)
+      paths = config.get('paths', [])
+      recursive = config.get('recursive', False)
+      search = self.search if not recursive else self.recursive_search
+      for p in paths:
+        search(p)
+      return self._recipes
 
   def recursive_search(self, path):
     skip_hidden = config.get('skip_hidden', True)
