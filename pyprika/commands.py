@@ -4,6 +4,7 @@ from .exceptions import LoadError
 from . import load
 from abc import ABCMeta, abstractmethod, abstractproperty
 from argparse import ArgumentParser
+import logging
 import os
 import sys
 import re
@@ -117,6 +118,8 @@ def main():
       cmd.setup_parser(p)
       p.set_defaults(func=cmd.execute)
     ns = parser.parse_args()
+    log_level = logging.WARNING - 10 * (ns.verbose - ns.quiet)
+    logging.basicConfig(level=log_level)
     ns.func(ns)
   except CommandError as e:
     sys.stderr.write(e.message + "\n")
@@ -124,6 +127,8 @@ def main():
 
 def get_parser():
   parser = ArgumentParser(description='Recipe management utility')
+  parser.add_argument('--quiet', '-q', action='count', default=0)
+  parser.add_argument('--verbose', '-v', action='count', default=0)
   return parser
 
 if __name__ == "__main__":

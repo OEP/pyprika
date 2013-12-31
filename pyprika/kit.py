@@ -8,6 +8,7 @@ pre-cache recipes which would be wasteful for a library to do.
 from . import load
 from .exceptions import LoadError 
 import glob
+import logging
 import os
 import warnings
 import yaml
@@ -35,15 +36,17 @@ class _Registry(object):
   def recursive_search(self, path):
     skip_hidden = config.get('skip_hidden', True)
     for root, dirnames, filenames in os.walk(path, topdown=True):
+      logging.info('crawling %s...', root)
       if skip_hidden:
         dirnames[:] = [d for d in dirnames if not d.startswith('.')]
         filenames[:] = [f for f in filenames if not f.startswith('.')]
       filenames[:] = [f for f in filenames if f.endswith('.yaml')]
       for f in filenames:
         try:
+          logging.info('discovered %s...', f)
           self.add(os.path.join(root, f))
-        except LoadError:
-          pass
+        except LoadError as e:
+          logging.warning('error loading %s: %s', os.path.join(root, f), e)
 
   def search(self, path):
     files = glob.glob(os.path.join(path, '*.yaml'))
