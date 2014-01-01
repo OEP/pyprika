@@ -7,7 +7,7 @@ def pprint_recipe(recipe, os=sys.stdout):
   os.write("Name: %s\n" % recipe.name)
   if recipe.servings:
     if isinstance(recipe.servings, (list, tuple)):
-      s = "-".join(recipe.servings)
+      s = "-".join(str(x) for x in recipe.servings)
     else:
       s = str(recipe.servings)
     os.write("Servings: %s\n" % s)
@@ -17,7 +17,7 @@ def pprint_recipe(recipe, os=sys.stdout):
     writeif(recipe.source_url, " <%s>" % recipe.source_url)
     os.write("\n")
   else:
-    writeif(recipe.source_url, "Source: %s\n" % recipe.source_url)
+    writeif(recipe.source_url, "%s\n" % recipe.source_url)
   writeif(recipe.prep_time, "Prep time: %s\n" % recipe.prep_time)
   writeif(recipe.cook_time, "Cook time: %s\n" % recipe.cook_time)
   os.write("\nIngredients:\n\n")
