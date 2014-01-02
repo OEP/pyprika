@@ -115,10 +115,9 @@ class Recipe(object):
 
   @servings.setter
   def servings(self, value):
-    if isinstance(value, (float, int)) or value is None:
+    if isinstance(value, (Fraction, long, float, int)) or value is None:
       self._servings = value
-    elif (isinstance(value, (list, tuple)) and len(value) == 2 and
-          all(isinstance(x, (int, float, Fraction)) for x in value)):
+    elif isinstance(value, (list, tuple)) and len(value) == 2:
       self._servings = tuple(value)
     else:
       raise TypeError("Not a number or 2-item tuple/list", value)
