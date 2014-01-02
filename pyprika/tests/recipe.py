@@ -69,8 +69,6 @@ class BasicTest(object):
     from copy import deepcopy
     i = self.instance
     result = deepcopy(i)
-    print i.to_dict()
-    print result.to_dict()
     self.assertEqual(i, result)
 
   def test_mul(self):
