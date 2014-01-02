@@ -1,6 +1,7 @@
 from .kit import registry
 from .pprint import pprint_recipe
 from .exceptions import LoadError
+from .quantity import _to_number
 from . import load
 from abc import ABCMeta, abstractmethod, abstractproperty
 from argparse import ArgumentParser
@@ -70,14 +71,20 @@ class Show(Command):
 
   def execute(self, ns):
     keys = [k for k in registry.recipes.keys() if k.startswith(ns.name)]
+    try:
+      scale = _to_number(ns.scale)
+    except ValueError:
+      raise CommandError("not a valid number: %s" % ns.scale)
     if len(keys) == 1:
-      pprint_recipe(registry.recipes[keys[0]])
+      pprint_recipe(scale * registry.recipes[keys[0]])
     elif len(keys) > 1:
       raise CommandError("not prefix-free (did you mean %s)?" % _suggest(keys))
     else:
       raise CommandError("no match found for '%s'" % ns.name)
 
   def setup_parser(self, parser):
+    parser.add_argument('--scale', '-s', type=str, default='1',
+                        help='scale the recipe by a constant factor')
     parser.add_argument('name', type=str,
                         help='name (or prefix of name) of recipe to show')
 
