@@ -64,10 +64,30 @@ class ManualInstanceTest(InstanceTest):
     i = cls.instance = Recipe.from_dict(STANDARD_DICT)
 
 class BasicTest(object):
-  
+
+  def test_copy(self):
+    from copy import deepcopy
+    i = self.instance
+    result = deepcopy(i)
+    print i.to_dict()
+    print result.to_dict()
+    self.assertEqual(i, result)
+
+  def test_mul(self):
+    i = self.instance
+    result = i * 2
+    result = result * 0.5
+    self.assertEqual(i, result)
+
   def test_to_from_dict(self):
     i = self.instance
     d = i.to_dict()
+    result = Recipe.from_dict(d)
+    self.assertEqual(i, result)
+  
+  def test_to_from_dict_serialize(self):
+    i = self.instance
+    d = i.to_dict(serialize=True)
     result = Recipe.from_dict(d)
     self.assertEqual(i, result)
 

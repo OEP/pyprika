@@ -1,4 +1,5 @@
 from copy import deepcopy
+from fractions import Fraction
 from .ingredient import Ingredient
 from .quantity import Quantity, QuantityDescriptor
 
@@ -94,6 +95,20 @@ class Recipe(object):
     return all(getattr(self, x) == getattr(o, x)
                for x in RECIPE_ATTRIBUTES)
 
+  def __mul__(self, o):
+    result = deepcopy(self)
+    if isinstance(result.servings, (list, tuple)):
+      result.servings = [o * x for x in result.servings]
+    elif result.servings is None:
+      pass
+    else:
+      result.servings = o * result.servings if result.servings else None
+    result.ingredients = [o * i for i in result.ingredients]
+    return result
+
+  def __rmul__(self, o):
+    return self * o
+
   @property
   def servings(self):
     return getattr(self, '_servings', None)
@@ -103,7 +118,7 @@ class Recipe(object):
     if isinstance(value, (float, int)) or value is None:
       self._servings = value
     elif (isinstance(value, (list, tuple)) and len(value) == 2 and
-          all(isinstance(x, (int, float)) for x in value)):
+          all(isinstance(x, (int, float, Fraction)) for x in value)):
       self._servings = tuple(value)
     else:
       raise TypeError("Not a number or 2-item tuple/list", value)
