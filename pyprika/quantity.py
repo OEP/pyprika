@@ -4,9 +4,13 @@ from fractions import Fraction
 
 from .exceptions import ParseError
 
-quantity_rx = re.compile(r'^(((?P<ipart>\d+) )?(?P<fpart>\d+/\d+)|(?P<amount>\d+([.]\d+)?))( (?P<unit>.*))?$')
+number_rx = re.compile(r'^(((?P<ipart>\d+) )?(?P<fpart>\d+/\d+)|(?P<amount>\d+([.]\d+)?))$')
+quantity_rx = re.compile(r'^(?P<number>[0-9./]+( [0-9./]+)?)( (?P<unit>.*))?$')
 
 def _to_number(amount):
+  m = number_rx.match(amount)
+  if not m:
+    raise ValueError("Can't convert to number", amount)
   try:
     return int(amount)
   except ValueError:
@@ -15,11 +19,12 @@ def _to_number(amount):
     return float(amount)
   except ValueError:
     pass
-  try:
-    return Fraction(amount)
-  except ValueError:
-    pass
-  raise ParseError("Can't convert to number", amount)
+
+  ipart, fpart = m.group('ipart', 'fpart')
+  value = int(ipart) if ipart else 0
+  if fpart:
+    value = value + Fraction(fpart)
+  return value
 
 class Quantity(object):
   """ Class for representing quantity.
@@ -58,14 +63,11 @@ class Quantity(object):
     m = quantity_rx.match(s)
     if not m:
       raise ParseError("Not valid quantity syntax", s)
-    amount, unit, ipart, fpart = m.group('amount', 'unit', 'ipart', 'fpart')
-    if amount:
-      amount = _to_number(amount)
-    elif ipart and not fpart:
-      amount = int(ipart)
-    else:
-      assert fpart
-      amount = int(ipart or 0) + Fraction(fpart)
+    number, unit = m.group('number', 'unit')
+    try:
+      amount = _to_number(number)
+    except ValueError:
+      raise ParseError("Not a valid number", number)
     return cls(amount=amount, unit=unit)
   
   def __init__(self, amount=None, unit=None):
