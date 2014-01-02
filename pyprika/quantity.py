@@ -112,15 +112,16 @@ class Quantity(object):
 
 class QuantityDescriptor(object):
 
-  def __init__(self, value=None, convert=False):
+  def __init__(self, name, value=None, convert=False):
+    self.name = name
     self.convert = convert
     self.default = self._check(value)
 
   def __get__(self, obj, objtype):
-    return obj.__dict__.get(self, self.default)
+    return obj.__dict__.get(self.name, self.default)
 
   def __set__(self, obj, value):
-    obj.__dict__[self] = self._check(value)
+    obj.__dict__[self.name] = self._check(value)
 
   def _check(self, value):
     if isinstance(value, basestring) and self.convert:

@@ -35,8 +35,8 @@ class Recipe(object):
   servings = None
   source = ''
   source_url = ''
-  prep_time = QuantityDescriptor(convert=True) 
-  cook_time = QuantityDescriptor(convert=True) 
+  prep_time = QuantityDescriptor('prep_time', convert=True) 
+  cook_time = QuantityDescriptor('cook_time', convert=True) 
   notes = ''
   ingredients = ()
   directions = ()
