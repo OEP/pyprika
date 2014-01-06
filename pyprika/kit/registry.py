@@ -64,6 +64,9 @@ class _Registry(object):
         self.add(f)
       except LoadError:
         pass
+
+  def select(self, index):
+    return [k for k in self.recipes.keys() if k.startswith(index)]
     
   def add(self, path):
     with open(path, 'r') as fp:

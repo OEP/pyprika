@@ -78,7 +78,7 @@ class Show(Command):
   help = 'show recipe contents'
 
   def execute(self, ns):
-    keys = [k for k in registry.recipes.keys() if k.startswith(ns.name)]
+    keys = registry.select(ns.index) 
     try:
       scale = _to_number(ns.scale)
     except ValueError:
@@ -88,13 +88,13 @@ class Show(Command):
     elif len(keys) > 1:
       raise CommandError("not prefix-free (did you mean %s)?" % _suggest(keys))
     else:
-      raise CommandError("no match found for '%s'" % ns.name)
+      raise CommandError("no match found for '%s'" % ns.index)
 
   def setup_parser(self, parser):
     parser.add_argument('--scale', '-s', type=str, default='1',
                         help='scale the recipe by a constant factor')
-    parser.add_argument('name', type=str,
-                        help='name (or prefix of name) of recipe to show')
+    parser.add_argument('index', type=str,
+                        help='index (or prefix of index) of recipe to show')
 
 class Validate(Command):
   name = 'validate'
