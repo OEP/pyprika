@@ -179,4 +179,4 @@ pseudoxml:
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
 test:
-	python -m unittest pyprika.tests.{recipe,quantity,ingredient}
+	python -m pyprika.tests.main
