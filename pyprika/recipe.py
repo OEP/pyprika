@@ -4,6 +4,7 @@ from .ingredient import Ingredient
 from .quantity import Quantity, QuantityDescriptor
 
 RECIPE_ATTRIBUTES = (
+  'index',
   'name',
   'servings',
   'source',
@@ -19,6 +20,7 @@ class Recipe(object):
   """Class for representing a recipe.
 
   :ivar str name: human-friendly name of recipe
+  :ivar index: optional application-specific indexing value
   :ivar servings: number of servings or a range (a 2-item tuple) 
   :type servings int or tuple or None:
   :ivar str source: human-friendly source of recipe
@@ -32,6 +34,7 @@ class Recipe(object):
 
   name = None
 
+  index = None
   servings = None
   source = ''
   source_url = ''

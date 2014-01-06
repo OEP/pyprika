@@ -5,6 +5,7 @@ from .common import BaseTest
 
 STANDARD_DICT = {
   'name': 'My Special Recipe',
+  'index': 'MSR0001',
   'prep_time': '1 day',
   'cook_time': '1 week',
   'servings': [2, 4],

@@ -57,7 +57,10 @@ class Search(Command):
     recipes = [r for r in registry.recipes.itervalues()
                if re.search(ns.term, r.name, flags)]
     for r in recipes:
-      print r.name
+      if not r.index is None:
+        print r.index, r.name
+      else:
+        print r.name
 
   def setup_parser(self, parser):
     parser.add_argument('term', type=str,
