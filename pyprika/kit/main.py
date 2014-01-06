@@ -1,6 +1,7 @@
 from .commands import Show, Search, Validate, List, CommandError
 from argparse import ArgumentParser
 import logging
+import sys
 
 COMMANDS = [
   List(),
