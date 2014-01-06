@@ -1,8 +1,9 @@
-from .commands import Show, Search, Validate, CommandError
+from .commands import Show, Search, Validate, List, CommandError
 from argparse import ArgumentParser
 import logging
 
 COMMANDS = [
+  List(),
   Show(),
   Search(),
   Validate(),

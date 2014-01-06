@@ -42,6 +42,17 @@ class Command(object):
   def setup_parser(self, subparsers):
     raise NotImplementedError
 
+class List(Command):
+  name = 'ls'
+  help = 'list all recipes'
+
+  def execute(self, ns):
+    for r in registry.recipes.itervalues():
+      print r.index, r.name
+
+  def setup_parser(self, parser):
+    pass
+
 class Search(Command):
   name = 'search'
   help = 'look up recipes by name'
@@ -54,10 +65,7 @@ class Search(Command):
     recipes = [r for r in registry.recipes.itervalues()
                if re.search(ns.term, r.name, flags)]
     for r in recipes:
-      if not r.index is None:
-        print r.index, r.name
-      else:
-        print r.name
+      print r.index, r.name
 
   def setup_parser(self, parser):
     parser.add_argument('term', type=str,
