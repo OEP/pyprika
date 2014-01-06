@@ -6,7 +6,8 @@ pre-cache recipes which would be wasteful for a library to do.
 """
 
 from . import load
-from .exceptions import LoadError 
+from .exceptions import LoadError
+import hashlib
 import glob
 import logging
 import os
@@ -67,6 +68,11 @@ class _Registry(object):
   def add(self, path):
     with open(path, 'r') as fp:
       recipe = load(fp)
-      self.recipes[recipe.name] = recipe
+      if recipe.index is None:
+        hasher = hashlib.md5()
+        fp.seek(0)
+        hasher.update(fp.read())
+        recipe.index = hasher.hexdigest()
+      self.recipes[recipe.index] = recipe
 
 registry = _Registry()
