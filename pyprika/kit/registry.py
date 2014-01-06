@@ -5,8 +5,8 @@ Importing this module could potentially be a performance hit as it tries to
 pre-cache recipes which would be wasteful for a library to do.
 """
 
-from . import load
-from .exceptions import LoadError
+from .. import load
+from ..exceptions import LoadError
 import hashlib
 import glob
 import logging

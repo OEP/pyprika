@@ -13,7 +13,7 @@ README = open('README.rst').read()
 setup(
   name='pyprika',
   version=__version__,
-  packages=['pyprika', 'pyprika.tests'],
+  packages=['pyprika', 'pyprika.kit', 'pyprika.tests'],
   description='A recipe management library',
   long_description=README,
   url='https://github.com/OEP/pyprika',
@@ -30,7 +30,7 @@ setup(
   ],
   entry_points={
     'console_scripts': [
-      'kit = pyprika.commands:main',
+      'kit = pyprika.kit.main:main',
     ],
   },
   install_requires=[
