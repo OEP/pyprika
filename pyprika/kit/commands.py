@@ -5,6 +5,7 @@ from ..quantity import _to_number
 from .. import load
 from abc import ABCMeta, abstractmethod, abstractproperty
 import sys
+import os
 import re
 
 def _suggest(matches, cutoff=5, conjunct=' or ', sep=', ', ellipsis='...'):
@@ -42,6 +43,43 @@ class Command(object):
   def setup_parser(self, subparsers):
     raise NotImplementedError
 
+class Edit(Command):
+  name = 'edit'
+  help = 'edit a recipe'
+
+  DEFAULT_EDITOR = 'pico'
+
+  def _kit_editor(self):
+    cls = type(self)
+    editor = None
+    if editor is None:
+      editor = os.getenv('KIT_EDITOR')
+    if editor is None:
+      editor = os.getenv('EDITOR')
+    if editor is None:
+      editor = cls.DEFAULT_EDITOR
+    return editor
+
+  def execute(self, ns):
+    k = ns.index
+    keys = registry.select(k)
+    if len(keys) > 1:
+      raise CommandError('multiple matches for `%s`' % k)
+    elif len(keys) == 0:
+      raise CommandError('no matches for `%s`' % k)
+    k = keys[0]
+    path = registry.paths[k]
+    editor = self._kit_editor()
+    try:
+      os.execvp(editor, [editor, path])
+    except OSError as e:
+      raise CommandError("error launching '%s': %s"
+                         % (editor, os.strerror(e.errno)))
+  
+  def setup_parser(self, parser):
+    parser.add_argument('index', type=str,
+                        help='index of recipe to edit')
+
 class List(Command):
   name = 'ls'
   help = 'list all recipes'
@@ -78,7 +116,7 @@ class Show(Command):
   help = 'show recipe contents'
 
   def execute(self, ns):
-    keys = [k for k in registry.recipes.keys() if k.startswith(ns.name)]
+    keys = registry.select(ns.index) 
     try:
       scale = _to_number(ns.scale)
     except ValueError:
@@ -88,13 +126,13 @@ class Show(Command):
     elif len(keys) > 1:
       raise CommandError("not prefix-free (did you mean %s)?" % _suggest(keys))
     else:
-      raise CommandError("no match found for '%s'" % ns.name)
+      raise CommandError("no match found for '%s'" % ns.index)
 
   def setup_parser(self, parser):
     parser.add_argument('--scale', '-s', type=str, default='1',
                         help='scale the recipe by a constant factor')
-    parser.add_argument('name', type=str,
-                        help='name (or prefix of name) of recipe to show')
+    parser.add_argument('index', type=str,
+                        help='index (or prefix of index) of recipe to show')
 
 class Validate(Command):
   name = 'validate'

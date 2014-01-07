@@ -1,8 +1,11 @@
-from .commands import Show, Search, Validate, List, CommandError
+from .commands import Edit, Show, Search, Validate, List, CommandError
 from argparse import ArgumentParser
+import os
 import logging
+import sys
 
 COMMANDS = [
+  Edit(),
   List(),
   Show(),
   Search(),
@@ -22,7 +25,8 @@ def main():
     logging.basicConfig(level=log_level)
     ns.func(ns)
   except CommandError as e:
-    sys.stderr.write(e.message + "\n")
+    head, tail = os.path.split(sys.argv[0])
+    sys.stderr.write("%s: %s\n" % (tail, e.message))
     sys.exit(e.exitcode)
 
 def get_parser():

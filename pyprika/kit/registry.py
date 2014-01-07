@@ -42,6 +42,15 @@ class _Registry(object):
         search(p)
       return self._recipes
 
+  @property
+  def paths(self):
+    try:
+      return self._paths
+    except AttributeError:
+      self._paths = {}
+      self.recipes ## attempt to build path dict
+      return self._paths
+
   def recursive_search(self, path):
     skip_hidden = config.get('skip_hidden', True)
     for root, dirnames, filenames in os.walk(path, topdown=True):
@@ -64,6 +73,9 @@ class _Registry(object):
         self.add(f)
       except LoadError:
         pass
+
+  def select(self, index):
+    return [k for k in self.recipes.keys() if k.startswith(index)]
     
   def add(self, path):
     with open(path, 'r') as fp:
@@ -74,5 +86,6 @@ class _Registry(object):
         hasher.update(fp.read())
         recipe.index = hasher.hexdigest()
       self.recipes[recipe.index] = recipe
+      self.paths[recipe.index] = path
 
 registry = _Registry()
