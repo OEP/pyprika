@@ -5,6 +5,7 @@ from ..quantity import _to_number
 from .. import load
 from abc import ABCMeta, abstractmethod, abstractproperty
 import sys
+import os
 import re
 
 def _suggest(matches, cutoff=5, conjunct=' or ', sep=', ', ellipsis='...'):
@@ -41,6 +42,43 @@ class Command(object):
   @abstractmethod
   def setup_parser(self, subparsers):
     raise NotImplementedError
+
+class Edit(Command):
+  name = 'edit'
+  help = 'edit a recipe'
+
+  DEFAULT_EDITOR = 'pico'
+
+  def _kit_editor(self):
+    cls = type(self)
+    editor = None
+    if editor is None:
+      editor = os.getenv('KIT_EDITOR')
+    if editor is None:
+      editor = os.getenv('EDITOR')
+    if editor is None:
+      editor = cls.DEFAULT_EDITOR
+    return editor
+
+  def execute(self, ns):
+    k = ns.index
+    keys = registry.select(k)
+    if len(keys) > 1:
+      raise CommandError('multiple matches for `%s`' % k)
+    elif len(keys) == 0:
+      raise CommandError('no matches for `%s`' % k)
+    k = keys[0]
+    path = registry.paths[k]
+    editor = self._kit_editor()
+    try:
+      os.execvp(editor, [editor, path])
+    except OSError as e:
+      raise CommandError("error launching '%s': %s"
+                         % (editor, os.strerror(e.errno)))
+  
+  def setup_parser(self, parser):
+    parser.add_argument('index', type=str,
+                        help='index of recipe to edit')
 
 class List(Command):
   name = 'ls'
