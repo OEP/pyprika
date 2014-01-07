@@ -4,8 +4,8 @@ from setuptools import setup, find_packages
 ## run setup from all directories
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
-## get package version
-from pyprika import __version__
+## get __version__ and __author__
+execfile(os.path.join('pyprika', 'version.py'))
 
 ## fetch readme contents
 README = open('README.rst').read()
@@ -17,7 +17,7 @@ setup(
   description='A recipe management library',
   long_description=README,
   url='https://github.com/OEP/pyprika',
-  author='Paul Kilgo',
+  author=__author__,
   author_email='paulkilgo@gmail.com',
   classifiers=[
     'Intended Audience :: Developers',
