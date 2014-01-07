@@ -2,9 +2,6 @@
 A Python package for recipe parsing and management.
 """
 
-__version__ = '1.0.0'
-__author__ = 'Paul Kilgo'
-
 import yaml
 import sys
 from cStringIO import StringIO
@@ -12,6 +9,7 @@ from .exceptions import LoadError, ParseError
 from .ingredient import Ingredient
 from .quantity import Quantity
 from .recipe import Recipe
+from .version import __author__, __version__
 
 def load(fp, loader=None, **kw):
   """ Load ``fp``, a file-like object 
