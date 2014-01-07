@@ -1,5 +1,5 @@
 import pyprika
-import yaml, json, simplejson
+import yaml
 from pyprika import Recipe, ParseError, Ingredient, loads, dumps, LoadError
 from .common import BaseTest
 
@@ -103,16 +103,21 @@ class BasicTest(object):
     self.assertEqual(i, result)
   
   def test_dump_load_json(self):
+    import json
     i = self.instance
     s = dumps(i, dumper=json.dump)
     result = loads(s, loader=json.load)
     self.assertEqual(i, result)
   
   def test_dump_load_simplejson(self):
-    i = self.instance
-    s = dumps(i, dumper=simplejson.dump)
-    result = loads(s, loader=simplejson.load)
-    self.assertEqual(i, result)
+    try:
+      import simplejson
+      i = self.instance
+      s = dumps(i, dumper=simplejson.dump)
+      result = loads(s, loader=simplejson.load)
+      self.assertEqual(i, result)
+    except ImportError:
+      pass
 
 class ManualBasicTest(ManualInstanceTest, BasicTest):
   pass
