@@ -14,7 +14,7 @@ import os
 import warnings
 import yaml
 
-config_path = os.path.expanduser("~/.pyprika")
+config_path = os.path.expanduser("~/.kitrc")
 if os.path.exists(config_path):
   with open(config_path) as fp:
     config = yaml.load(fp)
