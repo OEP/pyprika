@@ -71,8 +71,8 @@ class _Registry(object):
     for f in files:
       try:
         self.add(f)
-      except LoadError:
-        pass
+      except LoadError as e:
+        logging.warning('error loading %s: %s', f, e)
 
   def select(self, index):
     return [k for k in self.recipes.keys() if k.startswith(index)]
