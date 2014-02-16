@@ -4,9 +4,13 @@ from fractions import Fraction
 
 from .exceptions import ParseError
 
-quantity_rx = re.compile(r'^(((?P<ipart>\d+) )?(?P<fpart>\d+/\d+)|(?P<amount>\d+([.]\d+)?))( (?P<unit>.*))?$')
+number_rx = re.compile(r'^(((?P<ipart>\d+) )?(?P<fpart>\d+/\d+)|(?P<amount>\d+([.]\d+)?))$')
+quantity_rx = re.compile(r'^(?P<number>[0-9./]+( [0-9./]+)?)( (?P<unit>.*))?$')
 
 def _to_number(amount):
+  m = number_rx.match(amount)
+  if not m:
+    raise ValueError("Can't convert to number", amount)
   try:
     return int(amount)
   except ValueError:
@@ -15,29 +19,55 @@ def _to_number(amount):
     return float(amount)
   except ValueError:
     pass
-  try:
-    return Fraction(amount)
-  except ValueError:
-    pass
-  raise ParseError("Can't convert to number", amount)
+
+  ipart, fpart = m.group('ipart', 'fpart')
+  value = int(ipart) if ipart else 0
+  if fpart:
+    value = value + Fraction(fpart)
+  return value
 
 class Quantity(object):
+  """ Class for representing quantity.
+
+  Quantities can either be a measurement (like ``1 cup``) or a dimensionless
+  amount (like ``12``).
+
+  :ivar amount: numeric amount of the quantity
+  :type amount: int or float or fractions.Fraction
+  :ivar str unit: unit of the amount, if any
+  """
   amount = None 
   unit = None
 
   @classmethod
   def parse(cls, s):
+    """
+    Parse an object from a string. Valid strings are of the form:
+
+    ::
+
+      amount[ unit] 
+    
+    Where ``unit`` is unconstrained and ``amount`` is one of the following:
+
+    * an integer, like ``4``
+    * a decimal number, like ``4.5`` (*not* scientific notation)
+    * a fraction, like ``1/2``
+    * a mixed number, like ``1 1/2``
+
+    :param str s: string to parse
+    :raises ParseError: on invalid syntax
+    :returns: the resulting Quantity 
+    :rtype: Quantity 
+    """
     m = quantity_rx.match(s)
     if not m:
       raise ParseError("Not valid quantity syntax", s)
-    amount, unit, ipart, fpart = m.group('amount', 'unit', 'ipart', 'fpart')
-    if amount:
-      amount = _to_number(amount)
-    elif ipart and not fpart:
-      amount = int(ipart)
-    else:
-      assert fpart
-      amount = int(ipart or 0) + Fraction(fpart)
+    number, unit = m.group('number', 'unit')
+    try:
+      amount = _to_number(number)
+    except ValueError:
+      raise ParseError("Not a valid number", number)
     return cls(amount=amount, unit=unit)
   
   def __init__(self, amount=None, unit=None):
@@ -82,15 +112,16 @@ class Quantity(object):
 
 class QuantityDescriptor(object):
 
-  def __init__(self, value=None, convert=False):
+  def __init__(self, name, value=None, convert=False):
+    self.name = name
     self.convert = convert
     self.default = self._check(value)
 
   def __get__(self, obj, objtype):
-    return obj.__dict__.get(self, self.default)
+    return obj.__dict__.get(self.name, self.default)
 
   def __set__(self, obj, value):
-    obj.__dict__[self] = self._check(value)
+    obj.__dict__[self.name] = self._check(value)
 
   def _check(self, value):
     if isinstance(value, basestring) and self.convert:

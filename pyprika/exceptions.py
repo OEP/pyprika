@@ -1,5 +1,7 @@
 class LoadError(Exception):
   """ A blanket exception to catch if there was an error loading a recipe.
+
+  :ivar cause: the original exception, if any
   """
   def __init__(self, *args, **kwargs):
     cause = kwargs.pop('cause', None)
@@ -20,7 +22,13 @@ class LoadError(Exception):
   def __repr__(self):
     return "<%s: %s>" % (type(self).__name__, self)
 
-class ParseError(Exception):
+class PyprikaError(Exception):
+  pass
+
+class ParseError(PyprikaError):
   """ Raised on invalid syntax.
   """
-  pass
+
+class FieldError(PyprikaError):
+  """ Raised when a constraint on a field is not met.
+  """

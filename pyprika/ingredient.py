@@ -8,11 +8,32 @@ from .exceptions import ParseError
 ingredient_rx = re.compile(r'^([(](?P<quantity>[^)]+)[)] )?(?P<label>.+)$')
 
 class Ingredient(object):
+  """ Class for representing ingredients.
+
+  :ivar str label: the label of the ingredient (like ``egg``)
+  :ivar Quantity quantity: the amount of the ingredient, if any
+  """
   label = None
   quantity = None
 
   @classmethod
   def parse(cls, s):
+    """
+    Parse an object from a string. Valid strings are of the form:
+
+    ::
+
+      [(quantity) ]label
+
+    Where ``quantity`` must be valid syntax to :meth:`Quantity.parse` and
+    ``label`` is any text not beginning with a value enclosed in
+    parenthesis.
+
+    :param str s: string to parse
+    :raises ParseError: on invalid syntax
+    :returns: the resulting Ingredient
+    :rtype: Ingredient
+    """
     m = ingredient_rx.match(s)
     if not m:
       raise ParseError("Invalid ingredient syntax", s)
