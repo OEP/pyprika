@@ -18,6 +18,14 @@ def _suggest(matches, cutoff=5, conjunct=' or ', sep=', ', ellipsis='...'):
   else:
     return sep.join(suggestions[:-1]) + conjunct + suggestions[-1]
 
+def _fetch_unique(index):
+  keys = registry.select(index)
+  if len(keys) > 1:
+    raise CommandError('multiple matches for `%s`' % index)
+  elif len(keys) == 0:
+    raise CommandError('no matches for `%s`' % index)
+  return keys[0]
+
 class CommandError(Exception):
   def __init__(self, message, exitcode=1):
     self.message = message
@@ -61,13 +69,7 @@ class Edit(Command):
     return editor
 
   def execute(self, ns):
-    k = ns.index
-    keys = registry.select(k)
-    if len(keys) > 1:
-      raise CommandError('multiple matches for `%s`' % k)
-    elif len(keys) == 0:
-      raise CommandError('no matches for `%s`' % k)
-    k = keys[0]
+    k = _fetch_unique(ns.index)
     path = registry.paths[k]
     editor = self._kit_editor()
     try:
@@ -116,17 +118,12 @@ class Show(Command):
   help = 'show recipe contents'
 
   def execute(self, ns):
-    keys = registry.select(ns.index) 
+    key = _fetch_unique(ns.index)
     try:
       scale = _to_number(ns.scale)
     except ValueError:
       raise CommandError("not a valid number: %s" % ns.scale)
-    if len(keys) == 1:
-      pprint_recipe(scale * registry.recipes[keys[0]])
-    elif len(keys) > 1:
-      raise CommandError("not prefix-free (did you mean %s)?" % _suggest(keys))
-    else:
-      raise CommandError("no match found for '%s'" % ns.index)
+    pprint_recipe(scale * registry.recipes[key])
 
   def setup_parser(self, parser):
     parser.add_argument('--scale', '-s', type=str, default='1',
@@ -155,4 +152,3 @@ class Validate(Command):
   def setup_parser(self, parser):
     parser.add_argument('filenames', type=str, nargs='+',
                         help='path to recipe file(s) to validate')
-
