@@ -40,6 +40,11 @@ API classes
 Exceptions
 ----------
 
+:class:`FieldError`
+~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: FieldError 
+
 :class:`ParseError`
 ~~~~~~~~~~~~~~~~~~
 
