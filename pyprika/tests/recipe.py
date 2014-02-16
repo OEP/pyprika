@@ -1,6 +1,7 @@
 import pyprika
 import yaml
-from pyprika import Recipe, ParseError, Ingredient, loads, dumps, LoadError
+from pyprika import (Recipe, ParseError, Ingredient, loads, dumps, LoadError,
+                     FieldError)
 from .common import BaseTest
 
 STANDARD_DICT = {
@@ -28,12 +29,12 @@ STANDARD_DICT = {
 class StaticTest(BaseTest):
   def test_empty(self):
     d = {}
-    self.assertRaises(KeyError, Recipe.from_dict, d)
+    self.assertRaises(FieldError, Recipe.from_dict, d)
     self.assertRaises(LoadError, loads, yaml.dump(d))
 
   def test_invalid_key(self): 
     d = {'name': 'Recipe', 'x': 3}
-    self.assertRaises(AttributeError, Recipe.from_dict, d)
+    self.assertRaises(FieldError, Recipe.from_dict, d)
     self.assertRaises(LoadError, loads, yaml.dump(d))
 
   def test_invalid_syntax_1(self):
@@ -43,17 +44,17 @@ class StaticTest(BaseTest):
 
   def test_invalid_type_1(self):
     d = {'name': 'Recipe', 'servings': 'four'}
-    self.assertRaises(TypeError, Recipe.from_dict, d)
+    self.assertRaises(FieldError, Recipe.from_dict, d)
     self.assertRaises(LoadError, loads, yaml.dump(d))
 
   def test_invalid_type_2(self):
     d = {'name': 'Recipe', 'servings': (1,)}
-    self.assertRaises(TypeError, Recipe.from_dict, d)
+    self.assertRaises(FieldError, Recipe.from_dict, d)
     self.assertRaises(LoadError, loads, yaml.dump(d))
 
   def test_invalid_type_3(self):
     d = {'name': 'Recipe', 'servings': (1,2,3)}
-    self.assertRaises(TypeError, Recipe.from_dict, d)
+    self.assertRaises(FieldError, Recipe.from_dict, d)
     self.assertRaises(LoadError, loads, yaml.dump(d))
 
 class InstanceTest(BaseTest):

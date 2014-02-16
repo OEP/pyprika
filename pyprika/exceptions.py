@@ -28,7 +28,7 @@ class PyprikaError(Exception):
 class ParseError(PyprikaError):
   """ Raised on invalid syntax.
   """
-  pass
 
-class UnknownFieldError(PyprikaError):
-  pass
+class FieldError(PyprikaError):
+  """ Raised when a constraint on a field is not met.
+  """

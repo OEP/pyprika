@@ -5,7 +5,7 @@ A Python package for recipe parsing and management.
 import yaml
 import sys
 from cStringIO import StringIO
-from .exceptions import LoadError, ParseError, PyprikaError
+from .exceptions import LoadError, ParseError, PyprikaError, FieldError
 from .ingredient import Ingredient
 from .quantity import Quantity
 from .recipe import Recipe

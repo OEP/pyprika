@@ -2,7 +2,7 @@ from copy import deepcopy
 from fractions import Fraction
 from .ingredient import Ingredient
 from .quantity import Quantity, QuantityDescriptor
-from .exceptions import UnknownFieldError
+from .exceptions import FieldError
 
 RECIPE_ATTRIBUTES = (
   'index',
@@ -50,15 +50,17 @@ class Recipe(object):
     """ Creates a new recipe from a dictionary.
 
     :param dict d: the dictionary to convert
-    :raises KeyError: if a required field is missing
-    :raises AttributeError: if an invalid field is specified
+    :raises FieldError: if a field is missing, invalid, or not well-formed
+    :raises ParseError: if a Pyprika syntax error is present
     :returns: the resulting recipe
     :rtype: Recipe
     """
+    if not 'name' in d:
+      raise FieldError('Field is required', 'name')
     i = cls(name=d['name'])
     for key in d.iterkeys():
       if not hasattr(i, key):
-        raise UnknownFieldError('Unknown field for recipe', key)
+        raise FieldError('Unknown field for recipe', key)
       v = deepcopy(d[key])
       setattr(i, key, v)
     return i
@@ -124,7 +126,7 @@ class Recipe(object):
     elif isinstance(value, (list, tuple)) and len(value) == 2:
       self._servings = tuple(value)
     else:
-      raise TypeError("Not a number or 2-item tuple/list", value)
+      raise FieldError("Not a number or 2-item tuple/list", value)
     return value
 
   @property
