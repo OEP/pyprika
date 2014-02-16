@@ -1,0 +1,10 @@
+RELEASE NOTES
+
+ensure unit tests pass (make test)
+git flow release start X.Y.Z
+bump version in 'pyprika/version.py'
+git commit pyprika/version.py -m 'version bump'
+git flow release finish X.Y.Z
+git push origin master develop X.Y.Z
+python setup.py sdist bdist upload
+activate on readthedocs if necessary
