@@ -5,7 +5,7 @@ A Python package for recipe parsing and management.
 import yaml
 import sys
 from cStringIO import StringIO
-from .exceptions import LoadError, ParseError
+from .exceptions import LoadError, ParseError, PyprikaError
 from .ingredient import Ingredient
 from .quantity import Quantity
 from .recipe import Recipe
@@ -40,7 +40,7 @@ def load(fp, loader=None, **kw):
       return Recipe.from_dict(d)
     else:
       raise LoadError('Recipe did not decode as expected (got %s)' % type(d).__name__)
-  except:
+  except PyprikaError:
     exc_type, exc, traceback = sys.exc_info()
     raise LoadError, LoadError(*exc.args, cause=exc), traceback
   

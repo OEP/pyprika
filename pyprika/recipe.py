@@ -2,6 +2,7 @@ from copy import deepcopy
 from fractions import Fraction
 from .ingredient import Ingredient
 from .quantity import Quantity, QuantityDescriptor
+from .exceptions import UnknownFieldError
 
 RECIPE_ATTRIBUTES = (
   'index',
@@ -57,7 +58,7 @@ class Recipe(object):
     i = cls(name=d['name'])
     for key in d.iterkeys():
       if not hasattr(i, key):
-        raise AttributeError(key)
+        raise UnknownFieldError('Unknown field for recipe', key)
       v = deepcopy(d[key])
       setattr(i, key, v)
     return i

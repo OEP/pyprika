@@ -22,7 +22,13 @@ class LoadError(Exception):
   def __repr__(self):
     return "<%s: %s>" % (type(self).__name__, self)
 
-class ParseError(Exception):
+class PyprikaError(Exception):
+  pass
+
+class ParseError(PyprikaError):
   """ Raised on invalid syntax.
   """
+  pass
+
+class UnknownFieldError(PyprikaError):
   pass
