@@ -18,6 +18,7 @@ features to touch on:
 
   name: Dumplings
 
+  index: DMP0001
   servings: [4, 6] 
   source: The Internet 
   source_url: http://www.example.com/
@@ -48,9 +49,13 @@ Field descriptions
   name
     The name of the recipe.
 
+  index
+    An indexing field which is not used internally by the library, but can be
+    used by applications to refer to the recipe.
+
   servings
     The number of servings the recipe produces. This may be an integer, or can
-    be a 2-item list to represent a range (e.g. 2 servings or 2-4 servings.
+    be a 2-item list to represent a range (e.g. 2 servings or 2-4 servings).
 
   source
     An unrestricted field for noting the source of the recipe.
