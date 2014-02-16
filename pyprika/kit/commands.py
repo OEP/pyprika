@@ -152,3 +152,16 @@ class Validate(Command):
   def setup_parser(self, parser):
     parser.add_argument('filenames', type=str, nargs='+',
                         help='path to recipe file(s) to validate')
+
+class Which(Command):
+  name = 'which'
+  help = 'print path to recipe'
+
+  def execute(self, ns):
+    k = _fetch_unique(ns.index)
+    path = registry.paths[k]
+    print path
+  
+  def setup_parser(self, parser):
+    parser.add_argument('index', type=str,
+                        help='index of recipe to find')

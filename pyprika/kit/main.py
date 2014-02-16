@@ -1,4 +1,4 @@
-from .commands import Edit, Show, Search, Validate, List, CommandError
+from .commands import Edit, Show, Search, Validate, List, Which, CommandError
 from argparse import ArgumentParser
 import os
 import logging
@@ -10,6 +10,7 @@ COMMANDS = [
   Show(),
   Search(),
   Validate(),
+  Which(),
 ]
 
 def main():
