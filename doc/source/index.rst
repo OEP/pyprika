@@ -21,9 +21,8 @@ Contents:
    :maxdepth: 2
 
    pyprika
+   kit
    yaml-spec
-
-
 
 Indices and tables
 ==================
