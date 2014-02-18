@@ -6,5 +6,5 @@ bump version in 'pyprika/version.py'
 git commit pyprika/version.py -m 'version bump'
 git flow release finish X.Y.Z
 git push origin master develop X.Y.Z
-python setup.py sdist bdist upload
+python setup.py sdist upload
 activate on readthedocs if necessary
