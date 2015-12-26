@@ -4,9 +4,9 @@ A Python package for recipe parsing and management.
 
 import yaml
 try:
-    from io import StringIO
-except ImportError:
     from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from .exceptions import LoadError, ParseError, PyprikaError, FieldError  # noqa
 from .ingredient import Ingredient  # noqa
