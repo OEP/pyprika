@@ -3,6 +3,11 @@ from fractions import Fraction
 
 from .exceptions import ParseError
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 number_rx = re.compile(
     r'^('
     r'((?P<ipart>\d+) )?(?P<fpart>\d+/\d+)'  # Fraction

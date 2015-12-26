@@ -35,7 +35,8 @@ def get_parser():
     parser.add_argument('--verbose', '-v', action='count', default=0)
 
     # Subcommands and handlers
-    subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers(dest='command')
+    subparsers.required = True
     for cmd in COMMANDS:
         p = subparsers.add_parser(cmd.name, help=cmd.help)
         cmd.setup_parser(p)

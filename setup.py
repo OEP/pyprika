@@ -5,7 +5,7 @@ from setuptools import setup
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 # get __version__ and __author__
-execfile(os.path.join('pyprika', 'version.py'))
+exec(open(os.path.join('pyprika', 'version.py')).read())
 
 # fetch readme contents
 README = open('README.rst').read()
@@ -25,7 +25,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: POSIX',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities',
     ],

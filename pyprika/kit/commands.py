@@ -39,6 +39,10 @@ class CommandError(Exception):
 class Command(object):
     __metaclass__ = ABCMeta
 
+    def __init__(self, stdout=None, stderr=None):
+        self.stdout = stdout or sys.stdout
+        self.stderr = stderr or sys.stderr
+
     @abstractproperty
     def help(self):
         raise NotImplementedError
@@ -93,8 +97,8 @@ class List(Command):
     help = 'list all recipes'
 
     def execute(self, ns):
-        for r in registry.recipes.itervalues():
-            print r.index, r.name
+        for r in registry.recipes.values():
+            self.stdout.write('{} {}\n'.format(r.index, r.name))
 
     def setup_parser(self, parser):
         pass
@@ -109,10 +113,10 @@ class Search(Command):
         if ns.ignore_case:
             flags |= re.I
 
-        recipes = [r for r in registry.recipes.itervalues()
+        recipes = [r for r in registry.recipes.values()
                    if re.search(ns.term, r.name, flags)]
         for r in recipes:
-            print r.index, r.name
+            self.stdout.write('{} {}\n'.format(r.index, r.name))
 
     def setup_parser(self, parser):
         parser.add_argument('term', type=str,
@@ -131,7 +135,8 @@ class Show(Command):
             scale = _to_number(ns.scale)
         except ValueError:
             raise CommandError("not a valid number: %s" % ns.scale)
-        pprint_recipe(scale * registry.recipes[key])
+        recipe = scale * registry.recipes[key]
+        pprint_recipe(recipe, os=self.stdout)
 
     def setup_parser(self, parser):
         parser.add_argument('--scale', '-s', type=str, default='1',
@@ -154,9 +159,9 @@ class Validate(Command):
             except (LoadError, IOError) as e:
                 exit_code = 1
                 if len(ns.filenames) > 1:
-                    print "%s: %s" % (f, e)
+                    self.stdout.write('{}: {}\n'.format(f, e))
                 else:
-                    print str(e)
+                    self.stdout.write('{}\n'.format(e))
         sys.exit(exit_code)
 
     def setup_parser(self, parser):
@@ -171,7 +176,7 @@ class Which(Command):
     def execute(self, ns):
         k = _fetch_unique(ns.index)
         path = registry.paths[k]
-        print path
+        self.stdout.write('{}\n'.format(path))
 
     def setup_parser(self, parser):
         parser.add_argument('index', type=str,

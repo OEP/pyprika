@@ -4,6 +4,11 @@ from .ingredient import Ingredient
 from .quantity import Quantity, QuantityDescriptor
 from .exceptions import FieldError
 
+try:
+    long
+except NameError:
+    long = int
+
 RECIPE_ATTRIBUTES = (
     'index',
     'name',
@@ -59,7 +64,7 @@ class Recipe(object):
         if 'name' not in d:
             raise FieldError('Field is required', 'name')
         i = cls(name=d['name'])
-        for key in d.iterkeys():
+        for key in d.keys():
             if not hasattr(i, key):
                 raise FieldError('Unknown field for recipe', key)
             v = deepcopy(d[key])
@@ -110,7 +115,7 @@ class Recipe(object):
             pass
         else:
             result.servings = o * result.servings if result.servings else None
-            result.ingredients = [o * i for i in result.ingredients]
+        result.ingredients = [o * i for i in result.ingredients]
         return result
 
     def __rmul__(self, o):

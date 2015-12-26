@@ -14,6 +14,8 @@ import os
 import warnings
 import yaml
 
+KIT_ENCODING = os.environ.get('KIT_ENCODING', 'utf-8')
+
 config_path = os.path.expanduser("~/.kitrc")
 if os.path.exists(config_path):
     with open(config_path) as fp:
@@ -26,8 +28,8 @@ if not isinstance(config, dict):
 
 
 class _Registry(object):
-    def __init__(self):
-        pass
+    def __init__(self, encoding=None):
+        self.encoding = encoding or KIT_ENCODING
 
     @property
     def recipes(self):
@@ -86,7 +88,7 @@ class _Registry(object):
             if recipe.index is None:
                 hasher = hashlib.md5()
                 fp.seek(0)
-                hasher.update(fp.read())
+                hasher.update(fp.read().encode(self.encoding))
                 recipe.index = hasher.hexdigest()
         self.recipes[recipe.index] = recipe
         self.paths[recipe.index] = path

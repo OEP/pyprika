@@ -3,8 +3,11 @@ A Python package for recipe parsing and management.
 """
 
 import yaml
-import sys
-from cStringIO import StringIO
+try:
+    from io import StringIO
+except ImportError:
+    from cStringIO import StringIO
+
 from .exceptions import LoadError, ParseError, PyprikaError, FieldError  # noqa
 from .ingredient import Ingredient  # noqa
 from .quantity import Quantity  # noqa
@@ -43,9 +46,8 @@ def load(fp, loader=None, **kw):
         else:
             raise LoadError('Recipe did not decode as expected (got %s)' %
                             type(d).__name__)
-    except PyprikaError:
-        exc_type, exc, traceback = sys.exc_info()
-        raise LoadError, LoadError(*exc.args, cause=exc), traceback
+    except PyprikaError as e:
+        raise LoadError(*e.args, cause=e)
 
 
 def loads(data, loader=None, **kw):
