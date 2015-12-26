@@ -27,7 +27,7 @@ def load(fp, loader=None, **kw):
     :param callable loader: takes one positional argument and optional
                             arguments and returns a dict (defaults to
                             ``yaml.load``)
-    :param **kw: passed through to loader
+    :param kw: passed through to loader
     :raises LoadError: if there was an error in the loading of the document,
                         usually indicative of a syntax error
     :returns: the recipe data contained in the stream
@@ -72,7 +72,7 @@ def dump(recipe, fp, dumper=None, **kw):
                             the first a dict and the second a file stream, and
                             optional keyword arguments and encodes the  recipe
                             to the file stream (defaults to yaml.dump)
-    :param **kw: passed through to dumper
+    :param kw: passed through to dumper
     """
     dumper = dumper or yaml.dump
     d = recipe.to_dict(serialize=True)

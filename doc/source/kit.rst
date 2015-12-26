@@ -55,7 +55,7 @@ Edits a recipe, using the first editor found in the environment variables
 Usage:
 
 .. code::
-  
+
   kit edit index
 
 List
@@ -66,7 +66,7 @@ Lists recipes in the registry by their index and name.
 Usage:
 
 .. code::
-  
+
   kit ls
 
 Show
@@ -78,7 +78,7 @@ scaled.
 Usage:
 
 .. code::
-  
+
   kit show [-s|--scale SCALE] index
 
 Search
@@ -88,7 +88,7 @@ Search for a recipe by terms in the title. The search can be case-insensitive
 when the ``-i`` flag is specified.
 
 .. code::
-  
+
   kit search [-i] search-term
 
 Validate
