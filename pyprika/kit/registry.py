@@ -40,6 +40,7 @@ class _Registry(object):
             recursive = config.get('recursive', False)
             search = self.search if not recursive else self.recursive_search
             for p in paths:
+                p = os.path.expanduser(p)
                 search(p)
             return self._recipes
 
