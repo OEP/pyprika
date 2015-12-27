@@ -4,6 +4,8 @@ import os
 import logging
 import sys
 
+FORMAT = 'kit: (%(levelname)s) %(message)s'
+
 COMMANDS = [
     Edit(),
     List(),
@@ -19,7 +21,7 @@ def main():
         parser = get_parser()
         ns = parser.parse_args()
         log_level = logging.WARNING - 10 * (ns.verbose - ns.quiet)
-        logging.basicConfig(level=log_level)
+        logging.basicConfig(level=log_level, format=FORMAT)
         ns.func(ns)
     except CommandError as e:
         head, tail = os.path.split(sys.argv[0])
