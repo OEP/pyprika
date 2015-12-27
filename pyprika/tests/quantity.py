@@ -19,43 +19,38 @@ class BaseInstanceTest(BaseTest):
 
 
 class UnitlessTest(BaseInstanceTest):
-    @classmethod
-    def setUpClass(cls):
-        cls.instance = Quantity.parse('1')
-        cls.amount = 1
-        cls.unit = None
+    def setUp(self):
+        self.instance = Quantity.parse('1')
+        self.amount = 1
+        self.unit = None
 
 
 class IntegerTest(BaseInstanceTest):
-    @classmethod
-    def setUpClass(cls):
-        cls.instance = Quantity.parse('1 fl oz')
-        cls.amount = 1
-        cls.unit = 'fl oz'
+    def setUp(self):
+        self.instance = Quantity.parse('1 fl oz')
+        self.amount = 1
+        self.unit = 'fl oz'
 
 
 class FloatTest(BaseInstanceTest):
-    @classmethod
-    def setUpClass(cls):
-        cls.instance = Quantity.parse('1.5 fl oz')
-        cls.amount = 1.5
-        cls.unit = 'fl oz'
+    def setUp(self):
+        self.instance = Quantity.parse('1.5 fl oz')
+        self.amount = 1.5
+        self.unit = 'fl oz'
 
 
 class FractionTest(BaseInstanceTest):
-    @classmethod
-    def setUpClass(cls):
-        cls.instance = Quantity.parse('3/2 fl oz')
-        cls.amount = Fraction(3, 2)
-        cls.unit = 'fl oz'
+    def setUp(self):
+        self.instance = Quantity.parse('3/2 fl oz')
+        self.amount = Fraction(3, 2)
+        self.unit = 'fl oz'
 
 
 class MixedTest(BaseInstanceTest):
-    @classmethod
-    def setUpClass(cls):
-        cls.instance = Quantity.parse('1 1/2 fl oz')
-        cls.amount = Fraction(3, 2)
-        cls.unit = 'fl oz'
+    def setUp(self):
+        self.instance = Quantity.parse('1 1/2 fl oz')
+        self.amount = Fraction(3, 2)
+        self.unit = 'fl oz'
 
 
 class BasicTest(object):

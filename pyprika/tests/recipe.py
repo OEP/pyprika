@@ -1,6 +1,11 @@
 import yaml
 
-import unittest
+import json
+import sys
+if sys.version_info < (2, 7):
+    import unittest2 as unittest
+else:
+    import unittest
 
 from pyprika import (Recipe, ParseError, loads, dumps, LoadError, FieldError)
 from .common import BaseTest
@@ -70,9 +75,8 @@ class InstanceTest(BaseTest):
 
 
 class ManualInstanceTest(InstanceTest):
-    @classmethod
-    def setUpClass(cls):
-        cls.instance = Recipe.from_dict(STANDARD_DICT)
+    def setUp(self):
+        self.instance = Recipe.from_dict(STANDARD_DICT)
 
 
 class BasicTest(object):
@@ -114,13 +118,12 @@ class BasicTest(object):
         self.assertEqual(i, result)
 
     def test_dump_load_json(self):
-        import json
         i = self.instance
         s = dumps(i, dumper=json.dump)
         result = loads(s, loader=json.load)
         self.assertEqual(i, result)
 
-    @unittest.skipIf(simplejson is None, 'simplejson is not installed')
+    @unittest.skipIf(simplejson is None, 'simplejson not installed')
     def test_dump_load_simplejson(self):
         i = self.instance
         s = dumps(i, dumper=simplejson.dump)

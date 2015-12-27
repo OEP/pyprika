@@ -10,27 +10,24 @@ class BaseInstanceTest(BaseTest):
 
 
 class ValuelessInstanceTest(BaseInstanceTest):
-    @classmethod
-    def setUpClass(cls):
-        cls.instance = Ingredient.parse('sea salt')
-        cls.label = 'sea salt'
-        cls.quantity = None
+    def setUp(self):
+        self.instance = Ingredient.parse('sea salt')
+        self.label = 'sea salt'
+        self.quantity = None
 
 
 class DimensionlessInstanceTest(BaseInstanceTest):
-    @classmethod
-    def setUpClass(cls):
-        cls.instance = Ingredient.parse('(2) eggs')
-        cls.label = 'eggs'
-        cls.quantity = Quantity(2)
+    def setUp(self):
+        self.instance = Ingredient.parse('(2) eggs')
+        self.label = 'eggs'
+        self.quantity = Quantity(2)
 
 
 class FullInstanceTest(BaseInstanceTest):
-    @classmethod
-    def setUpClass(cls):
-        cls.instance = Ingredient.parse('(16 fl oz) distilled water')
-        cls.label = 'distilled water'
-        cls.quantity = Quantity(16, 'fl oz')
+    def setUp(self):
+        self.instance = Ingredient.parse('(16 fl oz) distilled water')
+        self.label = 'distilled water'
+        self.quantity = Quantity(16, 'fl oz')
 
 
 class BasicInstanceTest(object):

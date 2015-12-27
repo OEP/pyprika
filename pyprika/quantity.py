@@ -109,13 +109,13 @@ class Quantity(object):
             ipart = int(s.numerator/s.denominator)
             fpart = s - ipart
             if ipart and fpart:
-                return "{} {}".format(ipart, fpart)
+                return "{0} {1}".format(ipart, fpart)
             return str(ipart or fpart or 0)
         s = strfrac(self.amount)
         if self.unit is None:
             return str(s)
         else:
-            return "{} {}".format(s, self.unit)
+            return "{0} {1}".format(s, self.unit)
 
     def __repr__(self):
         return "<Quantity: {}>".format(str(self))

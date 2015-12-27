@@ -49,7 +49,7 @@ class Ingredient(object):
         if self.quantity is None:
             return self.label
         else:
-            return "({}) {}".format(self.quantity, self.label)
+            return "({0}) {1}".format(self.quantity, self.label)
 
     def __repr__(self):
         return "<Ingredient: {}>".format(self)
