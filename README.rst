@@ -3,6 +3,11 @@ pyprika
 
 A recipe management library and command line tool.
 
+.. image:: https://travis-ci.org/OEP/pyprika.svg?branch=develop
+    :target: https://travis-ci.org/OEP/pyprika
+.. image:: https://badge.fury.io/py/pyprika.svg
+    :target: https://badge.fury.io/py/pyprika
+
 Primary features:
 
 * A YAML file format for encoding recipes.
