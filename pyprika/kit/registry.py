@@ -41,6 +41,7 @@ class _Registry(object):
         self.encoding = encoding or KIT_ENCODING
         self.search_paths = paths
         self.recursive = recursive
+        self.skip_hidden = skip_hidden
         if not isinstance(self.search_paths, (list, tuple)):
             self.search_paths = (self.search_paths,)
 
