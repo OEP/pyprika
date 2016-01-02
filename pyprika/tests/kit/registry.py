@@ -19,18 +19,18 @@ class RegistryTestCase(unittest.TestCase):
 
     def test_search(self):
         self.registry.search(FIXTURE_SIMPLE)
-        result = self.registry.recipes.keys()
+        result = list(self.registry.recipes.keys())
         expected = ['w01']
-        self.assertItemsEqual(expected, result)
+        self.assertEqual(expected, result)
 
     def test_search_shallow(self):
         self.registry.search(FIXTURE_ROOT)
-        result = self.registry.recipes.keys()
+        result = list(self.registry.recipes.keys())
         expected = ['no-index-recipe']
-        self.assertItemsEqual(expected, result)
+        self.assertEqual(expected, result)
 
     def test_recursive_search(self):
         self.registry.recursive_search(FIXTURE_ROOT)
-        result = self.registry.recipes.keys()
+        result = list(self.registry.recipes.keys())
         expected = ['no-index-recipe', 'w01']
-        self.assertItemsEqual(expected, result)
+        self.assertEqual(sorted(expected), sorted(result))
