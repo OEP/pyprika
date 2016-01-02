@@ -144,3 +144,25 @@ class WhichTestCase(BaseTestCase):
         result = cm.exception.message
         expected = 'no matches for `xxx`'
         self.assertEqual(expected, result)
+
+
+class PrivateTestCase(unittest.TestCase):
+    def test_suggest_2arg(self):
+        result = commands._suggest(('a', 'b'))
+        expected = 'a or b'
+        self.assertEqual(expected, result)
+
+    def test_suggest_3arg(self):
+        result = commands._suggest(('a', 'b', 'c'))
+        expected = 'a, b or c'
+        self.assertEqual(expected, result)
+
+    def test_suggest_4arg(self):
+        result = commands._suggest(('a', 'b', 'c', 'd'))
+        expected = 'a, b, c...'
+        self.assertEqual(expected, result)
+
+    def test_suggest_prefix(self):
+        result = commands._suggest(('pretty', 'prance', 'prince'))
+        expected = 'pre, pra or pri'
+        self.assertEqual(expected, result)

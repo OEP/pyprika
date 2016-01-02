@@ -10,13 +10,13 @@ import os
 import re
 
 
-def _suggest(matches, cutoff=5, conjunct=' or ', sep=', ', ellipsis='...'):
+def _suggest(matches, cutoff=3, conjunct=' or ', sep=', ', ellipsis='...'):
     assert len(matches) > 1
     suggestions = matches[:cutoff]
+    prefix = os.path.commonprefix(suggestions)
+    suggestions = [s[:len(prefix) + 1] for s in suggestions]
     if len(matches) > len(suggestions):
         return sep.join(suggestions) + ellipsis
-    elif len(suggestions) == 1:
-        return suggestions[0]
     else:
         return sep.join(suggestions[:-1]) + conjunct + suggestions[-1]
 
@@ -24,7 +24,8 @@ def _suggest(matches, cutoff=5, conjunct=' or ', sep=', ', ellipsis='...'):
 def _fetch_unique(index, registry):
     keys = registry.select(index)
     if len(keys) > 1:
-        raise CommandError('multiple matches for `%s`' % index)
+        raise CommandError('multiple matches for `%s` (did you mean %s?)' %
+                           (index, _suggest(keys)))
     elif len(keys) == 0:
         raise CommandError('no matches for `%s`' % index)
     return keys[0]
