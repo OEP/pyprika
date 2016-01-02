@@ -22,7 +22,7 @@ def main():
         ns = parser.parse_args()
         log_level = logging.WARNING - 10 * (ns.verbose - ns.quiet)
         logging.basicConfig(level=log_level, format=FORMAT)
-        ns.func(ns)
+        sys.exit(ns.func(ns))
     except CommandError as e:
         head, tail = os.path.split(sys.argv[0])
         sys.stderr.write("%s: %s\n" % (tail, e.message))

@@ -1,9 +1,10 @@
-from .registry import registry
+from .registry import registry as GLOBAL_REGISTRY
 from ..pprint import pprint_recipe
 from ..exceptions import LoadError
 from ..quantity import _to_number
 from .. import load
 from abc import ABCMeta, abstractmethod, abstractproperty
+import argparse
 import sys
 import os
 import re
@@ -20,7 +21,7 @@ def _suggest(matches, cutoff=5, conjunct=' or ', sep=', ', ellipsis='...'):
         return sep.join(suggestions[:-1]) + conjunct + suggestions[-1]
 
 
-def _fetch_unique(index):
+def _fetch_unique(index, registry):
     keys = registry.select(index)
     if len(keys) > 1:
         raise CommandError('multiple matches for `%s`' % index)
@@ -42,6 +43,7 @@ class Command(object):
     def __init__(self, stdout=None, stderr=None):
         self.stdout = stdout or sys.stdout
         self.stderr = stderr or sys.stderr
+        self.registry = GLOBAL_REGISTRY
 
     @abstractproperty
     def help(self):
@@ -58,6 +60,14 @@ class Command(object):
     @abstractmethod
     def setup_parser(self, subparsers):
         raise NotImplementedError
+
+    def run(self, *argv):
+        '''Simulate calling this command with given sys.argv
+        '''
+        parser = argparse.ArgumentParser()
+        self.setup_parser(parser)
+        args = parser.parse_args(argv)
+        self.execute(args)
 
 
 class Edit(Command):
@@ -78,8 +88,8 @@ class Edit(Command):
         return editor
 
     def execute(self, ns):
-        k = _fetch_unique(ns.index)
-        path = registry.paths[k]
+        k = _fetch_unique(ns.index, self.registry)
+        path = self.registry.paths[k]
         editor = self._kit_editor()
         try:
             os.execvp(editor, [editor, path])
@@ -97,8 +107,9 @@ class List(Command):
     help = 'list all recipes'
 
     def execute(self, ns):
-        for r in registry.recipes.values():
-            self.stdout.write('{} {}\n'.format(r.index, r.name))
+        for r in self.registry.recipes.values():
+            self.stdout.write('{0} {1}\n'.format(r.index, r.name))
+        return 0
 
     def setup_parser(self, parser):
         pass
@@ -113,10 +124,11 @@ class Search(Command):
         if ns.ignore_case:
             flags |= re.I
 
-        recipes = [r for r in registry.recipes.values()
+        recipes = [r for r in self.registry.recipes.values()
                    if re.search(ns.term, r.name, flags)]
         for r in recipes:
-            self.stdout.write('{} {}\n'.format(r.index, r.name))
+            self.stdout.write('{0} {1}\n'.format(r.index, r.name))
+        return 0
 
     def setup_parser(self, parser):
         parser.add_argument('term', type=str,
@@ -130,13 +142,14 @@ class Show(Command):
     help = 'show recipe contents'
 
     def execute(self, ns):
-        key = _fetch_unique(ns.index)
+        key = _fetch_unique(ns.index, self.registry)
         try:
             scale = _to_number(ns.scale)
         except ValueError:
             raise CommandError("not a valid number: %s" % ns.scale)
-        recipe = scale * registry.recipes[key]
+        recipe = scale * self.registry.recipes[key]
         pprint_recipe(recipe, os=self.stdout)
+        return 0
 
     def setup_parser(self, parser):
         parser.add_argument('--scale', '-s', type=str, default='1',
@@ -159,10 +172,10 @@ class Validate(Command):
             except (LoadError, IOError) as e:
                 exit_code = 1
                 if len(ns.filenames) > 1:
-                    self.stdout.write('{}: {}\n'.format(f, e))
+                    self.stdout.write('{0}: {1}\n'.format(f, e))
                 else:
-                    self.stdout.write('{}\n'.format(e))
-        sys.exit(exit_code)
+                    self.stdout.write('{0}\n'.format(e))
+        return exit_code
 
     def setup_parser(self, parser):
         parser.add_argument('filenames', type=str, nargs='+',
@@ -174,9 +187,10 @@ class Which(Command):
     help = 'print path to recipe'
 
     def execute(self, ns):
-        k = _fetch_unique(ns.index)
-        path = registry.paths[k]
-        self.stdout.write('{}\n'.format(path))
+        k = _fetch_unique(ns.index, self.registry)
+        path = self.registry.paths[k]
+        self.stdout.write('{0}\n'.format(path))
+        return 0
 
     def setup_parser(self, parser):
         parser.add_argument('index', type=str,

@@ -15,21 +15,34 @@ import warnings
 import yaml
 
 KIT_ENCODING = os.environ.get('KIT_ENCODING', 'utf-8')
+USER_CONFIG_PATH = os.path.expanduser("~/.kitrc")
 
-config_path = os.path.expanduser("~/.kitrc")
-if os.path.exists(config_path):
-    with open(config_path) as fp:
-        config = yaml.load(fp)
-else:
-    config = {}
-if not isinstance(config, dict):
-    warnings.warn('invalid user configuration; skipping')
-    config = {}
+
+class ConfigError(Exception):
+    pass
 
 
 class _Registry(object):
-    def __init__(self, encoding=None):
+
+    @classmethod
+    def from_config(cls, path):
+        with open(path, 'r') as fp:
+            config = yaml.load(fp)
+        if not isinstance(config, dict):
+            raise ConfigError('Configuration YAML file is not a mapping')
+        kw = {}
+        for k in ('encoding', 'paths', 'recursive', 'skip_hidden'):
+            if k in config:
+                kw[k] = config[k]
+        return cls(**kw)
+
+    def __init__(self, encoding=None, paths=(), recursive=False,
+                 skip_hidden=True):
         self.encoding = encoding or KIT_ENCODING
+        self.search_paths = paths
+        self.recursive = recursive
+        if not isinstance(self.search_paths, (list, tuple)):
+            self.search_paths = (self.search_paths,)
 
     @property
     def recipes(self):
@@ -38,10 +51,10 @@ class _Registry(object):
         except AttributeError:
             self._recipes = {}
             self.search(os.path.curdir)
-            paths = config.get('paths', [])
-            recursive = config.get('recursive', False)
-            search = self.search if not recursive else self.recursive_search
-            for p in paths:
+            search = (self.search
+                      if not self.recursive
+                      else self.recursive_search)
+            for p in self.search_paths:
                 p = os.path.expanduser(p)
                 search(p)
             return self._recipes
@@ -56,10 +69,9 @@ class _Registry(object):
             return self._paths
 
     def recursive_search(self, path):
-        skip_hidden = config.get('skip_hidden', True)
         for root, dirnames, filenames in os.walk(path, topdown=True):
             logging.info('crawling %s...', root)
-            if skip_hidden:
+            if self.skip_hidden:
                 dirnames[:] = [d for d in dirnames if not d.startswith('.')]
                 filenames[:] = [f for f in filenames if not f.startswith('.')]
             filenames[:] = [f for f in filenames if f.endswith('.yaml')]
@@ -93,4 +105,11 @@ class _Registry(object):
         self.recipes[recipe.index] = recipe
         self.paths[recipe.index] = path
 
-registry = _Registry()
+registry = None
+if os.path.exists(USER_CONFIG_PATH):
+    try:
+        registry = _Registry.from_config(USER_CONFIG_PATH)
+    except ConfigError:
+        warnings.warn('invalid user configuration; skipping')
+if registry is None:
+    registry = _Registry()
