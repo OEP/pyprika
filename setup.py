@@ -36,6 +36,7 @@ setup(
     },
     install_requires=[
         'PyYAML',
+        'python-slugify',
     ],
     test_suite='pyprika.tests',
 )

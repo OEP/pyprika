@@ -7,12 +7,12 @@ pre-cache recipes which would be wasteful for a library to do.
 
 from .. import load
 from ..exceptions import LoadError
-import hashlib
 import glob
 import logging
 import os
 import warnings
 import yaml
+from slugify import slugify
 
 KIT_ENCODING = os.environ.get('KIT_ENCODING', 'utf-8')
 USER_CONFIG_PATH = os.path.expanduser("~/.kitrc")
@@ -99,12 +99,22 @@ class _Registry(object):
         with open(path, 'r') as fp:
             recipe = load(fp)
             if recipe.index is None:
-                hasher = hashlib.md5()
-                fp.seek(0)
-                hasher.update(fp.read().encode(self.encoding))
-                recipe.index = hasher.hexdigest()
+                recipe.index = _unique_name(recipe.name, self.recipes.keys())
         self.recipes[recipe.index] = recipe
         self.paths[recipe.index] = path
+
+
+def _unique_name(base, universe, max_number=10000):
+    slug = slugify(base)
+    if slug not in universe:
+        return slug
+    for i in range(2, max_number):
+        name = slug + str(i)
+        if name not in universe:
+            return name
+    raise ValueError("Can not generate unique name. Too many recipes named "
+                     "`%s`." % slug)
+
 
 registry = None
 if os.path.exists(USER_CONFIG_PATH):
