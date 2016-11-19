@@ -53,6 +53,7 @@ class Recipe(object):
     ingredients = ()
     directions = ()
     categories = []
+
     
     @classmethod
     def from_dict(cls, d):
