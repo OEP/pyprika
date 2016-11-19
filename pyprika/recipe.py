@@ -20,6 +20,7 @@ RECIPE_ATTRIBUTES = (
     'notes',
     'ingredients',
     'directions',
+    'categories',
 )
 
 
@@ -50,7 +51,7 @@ class Recipe(object):
     notes = ''
     ingredients = ()
     directions = ()
-
+    categories = []
     @classmethod
     def from_dict(cls, d):
         """ Creates a new recipe from a dictionary.
