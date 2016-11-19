@@ -38,6 +38,7 @@ class Recipe(object):
     :ivar str notes: miscellaneous data about recipe
     :ivar list ingredients: list of Ingredient objects
     :ivar list directions: list of instructions to prepare recipe
+    :ivar list categories: list of categories for recipe organization
     """
 
     name = None
