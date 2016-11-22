@@ -1,18 +1,20 @@
 import os
 import sys
 import pkg_resources
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 from pyprika.kit import commands
 from pyprika.kit.commands import CommandError
 from pyprika.kit.registry import _Registry as Registry
+
+if sys.version_info < (2, 7):
+    import unittest2 as unittest
+else:
+    import unittest
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 FIXTURE_ROOT = pkg_resources.resource_filename('pyprika',
                                                'tests/kit/fixtures')

@@ -2,10 +2,6 @@ import yaml
 
 import json
 import sys
-if sys.version_info < (2, 7):
-    import unittest2 as unittest
-else:
-    import unittest
 
 from pyprika import (Recipe, ParseError, loads, dumps, LoadError, FieldError)
 from .common import BaseTest
@@ -14,6 +10,11 @@ try:
     import simplejson
 except ImportError:
     simplejson = None
+
+if sys.version_info < (2, 7):
+    import unittest2 as unittest
+else:
+    import unittest
 
 STANDARD_DICT = {
     'name': 'My Special Recipe',
