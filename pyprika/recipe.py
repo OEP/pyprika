@@ -50,15 +50,10 @@ class Recipe(object):
     prep_time = QuantityDescriptor('prep_time', convert=True)
     cook_time = QuantityDescriptor('cook_time', convert=True)
     notes = ''
-    ingredients = ()
-    directions = ()
-    categories = []
-
     
     @classmethod
     def from_dict(cls, d):
         """ Creates a new recipe from a dictionary.
-
         :param dict d: the dictionary to convert
         :raises FieldError: if a field is missing, invalid, or not well-formed
         :raises ParseError: if a Pyprika syntax error is present
@@ -98,6 +93,7 @@ class Recipe(object):
         self.name = name
         self.ingredients = []
         self.directions = []
+        self.categories = []
 
     def __str__(self):
         return self.name

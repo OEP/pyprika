@@ -26,7 +26,11 @@ features to touch on:
   cook_time: 45 min
   notes: |
     Piping hot!
- 
+
+  categories:
+    - Baking
+    - Appetizers
+
   ingredients:
     - (1/2 tsp) baking powder 
     - (1 1/2 cup) flour 
@@ -72,6 +76,9 @@ Field descriptions
 
   notes
     An unconstrained field for providing miscellaneous notes.
+
+  categories
+    A list of tags useful for organizing recipes.
 
   ingredients
     A list of ingredients needed for the recipe. Each item in the list must
