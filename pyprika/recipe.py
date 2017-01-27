@@ -50,7 +50,7 @@ class Recipe(object):
     prep_time = QuantityDescriptor('prep_time', convert=True)
     cook_time = QuantityDescriptor('cook_time', convert=True)
     notes = ''
-    
+
     @classmethod
     def from_dict(cls, d):
         """ Creates a new recipe from a dictionary.
