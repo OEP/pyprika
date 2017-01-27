@@ -84,6 +84,10 @@ class ShowTestCase(BaseTestCase):
         expected = '''\
 Name: Water
 
+Categories:
+
+  - Liquid
+
 Ingredients:
 
   - water

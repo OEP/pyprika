@@ -19,6 +19,10 @@ def pprint_recipe(recipe, os=sys.stdout):
         os.write("\n")
     else:
         writeif(recipe.source_url, "%s\n" % recipe.source_url)
+    if recipe.categories:
+        os.write('\nCategories:\n\n')
+        for c in recipe.categories:
+            os.write('  - %s\n' % c)
     writeif(recipe.prep_time, "Prep time: %s\n" % recipe.prep_time)
     writeif(recipe.cook_time, "Cook time: %s\n" % recipe.cook_time)
     os.write("\nIngredients:\n\n")
