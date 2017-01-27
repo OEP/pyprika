@@ -20,6 +20,7 @@ RECIPE_ATTRIBUTES = (
     'notes',
     'ingredients',
     'directions',
+    'categories',
 )
 
 
@@ -37,6 +38,7 @@ class Recipe(object):
     :ivar str notes: miscellaneous data about recipe
     :ivar list ingredients: list of Ingredient objects
     :ivar list directions: list of instructions to prepare recipe
+    :ivar list categories: list of categories for recipe organization
     """
 
     name = None
@@ -48,13 +50,10 @@ class Recipe(object):
     prep_time = QuantityDescriptor('prep_time', convert=True)
     cook_time = QuantityDescriptor('cook_time', convert=True)
     notes = ''
-    ingredients = ()
-    directions = ()
-
+    
     @classmethod
     def from_dict(cls, d):
         """ Creates a new recipe from a dictionary.
-
         :param dict d: the dictionary to convert
         :raises FieldError: if a field is missing, invalid, or not well-formed
         :raises ParseError: if a Pyprika syntax error is present
@@ -94,6 +93,7 @@ class Recipe(object):
         self.name = name
         self.ingredients = []
         self.directions = []
+        self.categories = []
 
     def __str__(self):
         return self.name
