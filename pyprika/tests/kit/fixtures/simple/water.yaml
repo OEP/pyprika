@@ -1,5 +1,7 @@
 index: w01
 name: Water
+categories:
+    - Liquid
 
 ingredients:
   - water
