@@ -179,4 +179,4 @@ pseudoxml:
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
 
 test:
-	python -m pyprika.tests.main
+	tox -e=py27
